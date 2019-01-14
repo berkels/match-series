@@ -1,0 +1,7 @@
+._*
+/quocGCC/*
+/quocmesh/projects/electronMicroscopy/CMakeLists.txt
+/quocmesh/selfTest/aol/CMakeLists.txt
+/quocmesh/selfTest/quoc/CMakeLists.txt
+/quocmesh/tools/image/converter/CMakeLists.txt
+/quocmesh/tools/image/manipulator/CMakeLists.txt
