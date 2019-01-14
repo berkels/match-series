@@ -1,0 +1,20 @@
+/** \namespace im
+ *  \brief Image processing on regular grids.
+ *  See Module Documentation \ref imgprocdoc.
+ */
+
+//! @dir
+//! @brief Image processing on regular grids.
+//! See Module Documentation @ref imgprocdoc.
+
+//! @defgroup imgproc Image processing
+
+//! @defgroup Segmentation Segmentation
+//! @ingroup imgproc
+
+//! @defgroup NonLocalNeighborhoodFilters Non-local Neighborhood Filters
+//! @ingroup imgproc
+
+//! @defgroup ElectronMicroscopy Electron microscopy
+//! @ingroup imgproc
+//! @brief Classes for the analysis of electron micrographs (e.g. lattice geometry, atom positions)

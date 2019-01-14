@@ -1,0 +1,53 @@
+templateNamePattern /Volumes/Data/Cpp/input/Al_oxygen_3e-5_3_Hour00_Minute00/Second_20/oxygen_3e-5_3_Hour_00_Minute_00_Second_20_Frame_%04d.dm4
+templateNumOffset 0
+templateNumStep 1
+numTemplates 3
+#templateSkipNums { 1 9 10 173 }
+
+cropInput 0
+cropStartX 742
+cropStartY 984
+dontResizeOrCropReference 0
+
+preSmoothSigma 0
+
+saveRefAndTempl 0
+
+numExtraStages 2
+
+saveDirectory results/
+
+dontNormalizeInputImages 0
+enhanceContrastSaturationPercentage 0.15
+normalizeMinToZero 1
+
+# lambda weights the deformation regularization term
+lambda         200
+# lambdaFactor scales lambda dependening on the current level: On level d, lambda is multiplied by pow ( lambdaFactor, stopLevel - d )
+lambdaFactor   1
+
+maxGDIterations 500
+stopEpsilon 1e-6
+
+startLevel 6
+stopLevel 8
+precisionLevel 8
+refineStartLevel 7
+refineStopLevel 8
+
+checkboxWidth 8
+
+resizeInput 0
+
+dontAccumulateDeformation 0
+reuseStage1Results 1
+extraStagesLambdaFactor 0.1
+useMedianAsNewTarget 1
+calcInverseDeformation 0
+skipStage1 0
+
+saveNamedDeformedTemplates 1
+saveNamedDeformedTemplatesUsingNearestNeighborInterpolation 1
+saveNamedDeformedTemplatesExtendedWithMean 1
+saveDeformedTemplates 1
+saveNamedDeformedDMXTemplatesAsDMX 1

@@ -1,0 +1,85 @@
+/** \namespace aol 
+ *  \brief Abstract Operator Library.
+ *  See Module Documentation \ref aoldoc.
+ */
+
+//! @dir
+//! @brief Abstract Operator Library.
+//! See Module Documentation @ref aoldoc.
+
+
+//! @defgroup Geometry Geometry
+//!
+
+//! @defgroup Point Point
+//! @ingroup Geometry
+
+//! @defgroup Line Line
+//! @ingroup Geometry
+
+//! @defgroup LinearAlgebra LinearAlgebra
+//!
+
+//! @defgroup Vector Vector
+//! @ingroup LinearAlgebra
+
+//! @defgroup Matrix Matrix
+//! @ingroup LinearAlgebra
+
+//! @defgroup solver Linear system solvers
+//! @ingroup LinearAlgebra
+//! @copydoc manual_solvingLinSystems
+
+//! @defgroup iterativeSolver Iterative solvers
+//! @ingroup solver
+
+//! @defgroup directSolver Direct solvers
+//! @ingroup solver
+
+//! @defgroup preconditioner Preconditioners
+//! @ingroup solver
+
+//! @defgroup FE Finite Elements
+//!
+
+//! @defgroup FELinOpInt Linear FEOp Interfaces
+//! @ingroup FE
+//! @brief Interface classes for weak formulations of linear operators discretized with Finite Elements.
+//! 
+//! In particular, the classes work in 2D and 3D, and can be endowed with arbitrary quadrature rules.
+
+//! @defgroup FENonlinOpInt Nonlinear FEOp Interfaces
+//! @ingroup FE
+
+//! @defgroup MatrixFEOp Matrix FEOps
+//! @ingroup FE
+
+//! @defgroup FEConfigurator FE Configurators
+//! @ingroup FE
+
+//! @defgroup Optimization Optimization algorithms
+//!
+
+//! @defgroup Utilities Utilities
+//! @brief Collection of utility classes for general purpose tasks.
+
+//! @defgroup AnalyticFunctions Analytic Functions
+//!
+
+//! @defgroup FunctionalAnalysis FunctionalAnalysis
+//!
+
+//! @defgroup Operator Operator
+//! @ingroup FunctionalAnalysis
+
+//! @defgroup InputOutput InputOutput
+//!
+
+//! @defgroup Input Input
+//! @ingroup InputOutput
+
+//! @defgroup Output Output
+//! @ingroup InputOutput
+
+//! @defgroup Profiling Profiling
+//!

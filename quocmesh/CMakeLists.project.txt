@@ -1,0 +1,166 @@
+# Go through all cpp files in the current directory and try to figure out
+# which of them are supposed to be executables.
+QUOC_FIND_FILES_WITH_SUFFIX ( "" cpp SRCS )
+SET ( MAIN_FILES "" )
+SET ( CPP_FILES "" )
+
+FOREACH ( SRC ${SRCS} )
+  FILE ( READ ${SRC} SOURCEFILE )
+  # If we find a main in the cpp file we assume it's an executable.
+  # Note: For some reason "^" at the beginning of the regex doesn't seem to work,
+  # so instead of trying to match the beginning of a line, we check if the main
+  # function immediately follows a line end. This check doesn't work if main
+  # is in the first line of a file, but since programs usually need includes
+  # this shouldn't cause trouble.
+  STRING ( REGEX MATCH "\n[ \t]*(void|int)[ \t]+main[ \t]*[\(]" MAIN_STRING ${SOURCEFILE})
+  IF ( MAIN_STRING )
+    SET ( MAIN_FILES ${MAIN_FILES} ${SRC} )
+  ELSE ( MAIN_STRING )
+    SET ( CPP_FILES ${CPP_FILES} ${SRC} )
+  ENDIF ( MAIN_STRING )
+ENDFOREACH ( SRC )
+
+# If we are using CUDA, also compile and link all cu files (cu files shouldn't have a main).
+IF ( CUDA_FOUND )
+  FILE ( GLOB CUDA_SRCS *.cu )
+  SET ( CPP_FILES ${CPP_FILES} ${CUDA_SRCS} )
+ENDIF ( )
+
+# If we are using Qt, take care of .ui and .hpp files.
+IF ( QT_FOUND OR Qt5_FOUND )
+  # Use uic on all .ui files.
+  FILE ( GLOB QT_UIS *.ui ui/*.ui )
+  SET ( QT_UI_HDRS "" )
+  IF ( QT_FOUND )
+    QT4_WRAP_UI ( QT_UI_HDRS ${QT_UIS} )
+  ELSE ( )
+    QT5_WRAP_UI ( QT_UI_HDRS ${QT_UIS} )
+  ENDIF ( )
+  # Use moc on all .hpp files.
+  FILE ( GLOB MOC_HDRS *.hpp )
+  SET ( MPC_SRCS "" )
+  IF ( QT_FOUND )
+    QT4_WRAP_CPP ( MPC_SRCS ${MOC_HDRS} )
+  ELSE ( )
+    QT5_WRAP_CPP ( MPC_SRCS ${MOC_HDRS} )
+  ENDIF ( )
+  SET ( CPP_FILES ${CPP_FILES} ${MPC_SRCS} ${QT_UI_HDRS} )
+  INCLUDE_DIRECTORIES ( ${CMAKE_CURRENT_BINARY_DIR} )
+ENDIF ( )
+
+INCLUDE_DIRECTORIES ( ${CMAKE_CURRENT_SOURCE_DIR} )
+
+# If we are using OpenCL, we export the current source directory so that kernel files
+# can be loaded from there.
+IF ( OPENCL_FOUND )
+  ADD_DEFINITIONS ( -DCMAKE_CURRENT_SOURCE_DIR_STRING="${CMAKE_CURRENT_SOURCE_DIR}" )
+ENDIF ( )
+
+# For an IDE it's helpful to group all targets based on their folder.
+STRING ( REPLACE ${CMAKE_SOURCE_DIR}/ "" PROJECT_FOLDER ${CMAKE_CURRENT_SOURCE_DIR} )
+
+# Create a library from all cpp files that don't contain a main and link this library to all executables in this directory.
+STRING ( LENGTH "${CPP_FILES}" STRING_LENGTH )
+IF ( STRING_LENGTH GREATER 0 )
+  QUOC_GEN_TARGETNAME ( ${CMAKE_CURRENT_SOURCE_DIR}/objects TARGETNAME )
+  SET ( LIB_NAME ${TARGETNAME} )
+  IF ( CUDA_FOUND )
+    CUDA_ADD_LIBRARY ( ${LIB_NAME} STATIC ${CPP_FILES} OPTIONS ${CUDA_CUSTOM_OPTIONS} )
+  ELSE ( )
+    ADD_LIBRARY ( ${LIB_NAME} STATIC ${CPP_FILES} )
+  ENDIF ( )
+  # Ensures that quocmesh library is built before objects
+  TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${QUOCMESH_LIBRARIES} )
+  # IDE organization
+  SET_TARGET_PROPERTIES( ${LIB_NAME} PROPERTIES FOLDER ${PROJECT_FOLDER} )
+  SET_TARGET_PROPERTIES( ${TARGETNAME} PROPERTIES PROJECT_LABEL objects )
+  IF ( Qt5_FOUND )
+    TARGET_LINK_LIBRARIES( ${LIB_NAME} Qt5::Widgets Qt5::PrintSupport )
+  ENDIF ( )
+ENDIF ( )
+
+# For an IDE it's convenient to have all headers in one of the targets. So collect them and assign them to a target later.
+FILE ( GLOB HDRS *.h )
+
+# Create a target for each executable.
+FOREACH ( MAIN_FILE ${MAIN_FILES} )
+  # Generate a unique target name.
+  QUOC_GEN_TARGETNAME ( ${MAIN_FILE} TARGETNAME )
+
+  # If there is a header with the same basename as the main cpp file assume that the header also belongs to the executable.
+  GET_FILENAME_COMPONENT ( MAIN_FILE_BASENAME "${MAIN_FILE}" NAME_WE )
+  SET ( MAIN_FILE_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/${MAIN_FILE_BASENAME}.h )
+  IF ( NOT EXISTS ${MAIN_FILE_HEADER} )
+    SET ( MAIN_FILE_HEADER "" )
+  ELSE ()
+    # This header will go into the current target, so remove it from the list of headers not used in a target yet.
+    LIST ( REMOVE_ITEM HDRS ${MAIN_FILE_HEADER} )
+  ENDIF ()
+
+  IF ( WIN32 AND NOT MINGW )
+    SET ( MAIN_FILE_RESOURCE ${CMAKE_CURRENT_SOURCE_DIR}/${MAIN_FILE_BASENAME}.rc )
+    IF ( NOT EXISTS ${MAIN_FILE_RESOURCE} )
+      SET ( MAIN_FILE_RESOURCE "" )
+    ENDIF ()
+  ENDIF ()
+
+  # The main file depends on the cpp files, so specify it after the cpp files.
+  QUOC_ADD_EXECUTABLE ( ${TARGETNAME} "${MAIN_FILE};${MAIN_FILE_HEADER};${MAIN_FILE_RESOURCE}" )
+
+  IF ( Qt5_FOUND )
+    TARGET_LINK_LIBRARIES( ${TARGETNAME} Qt5::Widgets Qt5::PrintSupport )
+  ENDIF ()
+
+  # Use a short non-unique name for the executable itself.
+  STRING ( REPLACE ${CMAKE_CURRENT_SOURCE_DIR}/ "" BASENAME ${MAIN_FILE} )
+  STRING ( REPLACE ".cpp" "" BASENAME ${BASENAME} )
+  SET_PROPERTY ( TARGET ${TARGETNAME} PROPERTY OUTPUT_NAME ${BASENAME} )
+  IF ( MSVC )
+    SET_TARGET_PROPERTIES( ${TARGETNAME} PROPERTIES DEBUG_OUTPUT_NAME ${BASENAME}d )
+  ENDIF ( MSVC )
+
+  # IDE organization
+  SET_TARGET_PROPERTIES( ${TARGETNAME} PROPERTIES FOLDER ${PROJECT_FOLDER} )
+  SET_TARGET_PROPERTIES( ${TARGETNAME} PROPERTIES PROJECT_LABEL ${BASENAME} )
+
+  # Possibly create a wrapper bat file to work around that Windows doesn't have an RPATH equivalent.
+  IF ( MINGW AND DYNAMIC_LINKING )
+    CONFIGURE_FILE ( ${CMAKE_SOURCE_DIR}/cmake.mgw.bat.in ${CMAKE_CURRENT_BINARY_DIR}/${BASENAME}.bat @ONLY )
+  ENDIF ( )
+
+  # Possibly create a short non-unique alias for this executable.
+  IF ( CREATE_SHORT_EXECUTABLE_TARGET_ALIASES )
+    ADD_CUSTOM_TARGET ( ${BASENAME} DEPENDS ${TARGETNAME} )
+  ENDIF ( )
+
+  TARGET_LINK_LIBRARIES( ${TARGETNAME} ${LIB_NAME} ${QUOCMESH_LIBRARIES} )
+  IF ( Qt5_FOUND AND WIN32 )
+    TARGET_LINK_LIBRARIES ( ${TARGETNAME} Qt5::WinMain )
+  ENDIF ( )
+  # If we are using CUDA, make cublas available.
+  IF ( CUDA_FOUND )
+    CUDA_ADD_CUBLAS_TO_TARGET ( ${TARGETNAME} )
+  ENDIF ( )
+
+  # Create an install target for this executable.
+  IF ( CMAKE_CURRENT_SOURCE_DIR MATCHES "${CMAKE_SOURCE_DIR}*" )
+    STRING ( REPLACE ${CMAKE_SOURCE_DIR}/ "" INSTALLSUBDIR ${CMAKE_CURRENT_SOURCE_DIR} )
+  ELSE ( )
+    SET ( INSTALLSUBDIR "" )
+  ENDIF ( )
+  INSTALL ( TARGETS ${TARGETNAME} RUNTIME DESTINATION bin/${INSTALLSUBDIR} )
+  SET_TARGET_PROPERTIES ( ${TARGETNAME} PROPERTIES INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib )
+ENDFOREACH ( MAIN_FILE )
+
+# If we use an IDE and have headers without a target, create a target with these headers so that we can access them in the IDE.
+IF ( ( MSVC OR XCODE ) AND ( HDRS OR MOC_HDRS ) )
+  QUOC_GEN_TARGETNAME ( ${CMAKE_CURRENT_SOURCE_DIR}/headers TARGETNAME )
+  ADD_CUSTOM_TARGET ( ${TARGETNAME} SOURCES ${HDRS} ${MOC_HDRS} )
+
+  # IDE organization
+  SET_TARGET_PROPERTIES( ${TARGETNAME} PROPERTIES FOLDER ${PROJECT_FOLDER} )
+  SET_TARGET_PROPERTIES( ${TARGETNAME} PROPERTIES PROJECT_LABEL headers )
+ENDIF ( )
+
+# Allow the user to extend CMakeLists.project.txt using a cmake.local
+INCLUDE ( ${CMAKE_CURRENT_SOURCE_DIR}/cmake.local OPTIONAL )

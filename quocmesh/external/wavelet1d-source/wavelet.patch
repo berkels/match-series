@@ -1,0 +1,279 @@
+--- wavelet.cpp	2011-05-28 07:52:06.000000000 +0200
++++ wavelet1.cpp	2015-06-05 12:48:02.000000000 +0200
+@@ -26,6 +26,12 @@
+ THE SOFTWARE.
+ */
+ 
++
++/*
++ * CHANGELOG:
++ *    2015-06-05 Mevenkamp: fix bug with Max_Iter comment out Gnuplot related code inside dwt(...) function
++ */
++
+ #include <iostream>
+ #include <fstream>
+ #include <complex>
+@@ -1738,7 +1744,7 @@
+                 , vector<double> &flag ) {
+ 
+         int Max_Iter;
+-                    Max_Iter = (int) ceil(log( double(sig.size()))/log (2.0)) - 1;
++                    Max_Iter = (int) ceil(log( double(sig.size()))/log (2.0));
+                     if ( Max_Iter < J) {
+                         cout << J << " Iterations are not possible with signal of length " << sig.size() << endl;
+                         exit(1);
+@@ -1762,31 +1768,31 @@
+     flag.push_back(J);
+     orig = sig;
+ 
+-    ofstream appx("appx.txt", ios::trunc);
+-    appx.close();
+-    ofstream det("det.txt", ios::trunc);
+-    det.close();
+-        //<------------------------------------------------------------------->
+-        // Preparing for GnuPlot
+-        // Storing Signal for Gnuplot
+-        unsigned int count = sig.size();
+-        ofstream gnusig("gnusig.dat");
+-        unsigned int ct_orig=original_copy.size();
+-        for (unsigned int i = 0;i < ct_orig; i++) {
+-                gnusig << i << " " << original_copy[i] << endl;
+-        }
+-        gnusig.close();
+-
+-        //  Storing Filter Values for GnuPlot
+-             vector<double> lp1,hp1,lp2,hp2;
+-             filtcoef(nm,lp1,hp1,lp2,hp2);
+-        ofstream gnufilt("gnufilt.dat");
+-        unsigned int len_filt = lp1.size();
+-        for (unsigned int i = 0; i < len_filt; i++) {
+-                gnufilt << i << " " << lp1[i] << " " << hp1[i] << " " << lp2[i] << " " << hp2[i] << endl;
+-        }
+-        gnufilt.close();
+-        // <------------------------------------------------------------------->
++//    ofstream appx("appx.txt", ios::trunc);
++//    appx.close();
++//    ofstream det("det.txt", ios::trunc);
++//    det.close();
++//        //<------------------------------------------------------------------->
++//        // Preparing for GnuPlot
++//        // Storing Signal for Gnuplot
++//        unsigned int count = sig.size();
++//        ofstream gnusig("gnusig.dat");
++//        unsigned int ct_orig=original_copy.size();
++//        for (unsigned int i = 0;i < ct_orig; i++) {
++//                gnusig << i << " " << original_copy[i] << endl;
++//        }
++//        gnusig.close();
++//
++//        //  Storing Filter Values for GnuPlot
++//             vector<double> lp1,hp1,lp2,hp2;
++//             filtcoef(nm,lp1,hp1,lp2,hp2);
++//        ofstream gnufilt("gnufilt.dat");
++//        unsigned int len_filt = lp1.size();
++//        for (unsigned int i = 0; i < len_filt; i++) {
++//                gnufilt << i << " " << lp1[i] << " " << hp1[i] << " " << lp2[i] << " " << hp2[i] << endl;
++//        }
++//        gnufilt.close();
++//        // <------------------------------------------------------------------->
+ 
+ 
+     for (int iter = 0; iter < J; iter++) {
+@@ -1802,7 +1808,7 @@
+   //      vector<double> lp1,hp1,lp2,hp2;
+   //      filtcoef(nm,lp1,hp1,lp2,hp2);
+   //      gnudwtplot(sig, appx_sig, det_sig,lp1,hp1,lp2,hp2);
+-       // sig.clear();
++        sig.clear();
+         orig = appx_sig;
+         appx_sig.clear();
+         det_sig.clear();
+@@ -1811,73 +1817,73 @@
+ 
+     // Outputting Dwt Output and Flag as text files
+ 
+-    ofstream dwtout ("dwtout.txt");
+-                for (unsigned int i = 0; i < dwt_output.size(); i++){
+-                        dwtout << dwt_output[i] << endl;
+-                }
+-
+-          //  cout << flag[0]<< " " << flag[1] << endl;
+-
+-            ofstream flagged("flag.txt");
+-            for (int i =0; i < 2; i++){
+-                flagged << flag[i] << endl;
+-            }
++//    ofstream dwtout ("dwtout.txt");
++//                for (unsigned int i = 0; i < dwt_output.size(); i++){
++//                        dwtout << dwt_output[i] << endl;
++//                }
++//
++//          //  cout << flag[0]<< " " << flag[1] << endl;
++//
++//            ofstream flagged("flag.txt");
++//            for (int i =0; i < 2; i++){
++//                flagged << flag[i] << endl;
++//            }
+ 
+ 
+  // Processing Approximation and Detail Coefficients at each level for GnuPlot
+ 
+-    vector<double> appx_c , det_c;
+-    ifstream sig_inp("appx.txt");
+-    int appx_len = 0;
+-
+-    int det_len = 0;
+-    while (sig_inp) {
+-        double temp;
+-        sig_inp >> temp;
+-        appx_c.push_back(temp);
+-        appx_len++;
+-    }
+-    appx_c.pop_back();
+-    appx_len--;
+-
+-    ifstream sig_inp2("det.txt");
+-    while (sig_inp2) {
+-        double temp;
+-        sig_inp2 >> temp;
+-        det_c.push_back(temp);
+-        det_len++;
+-    }
+-    det_c.pop_back();
+-    det_len--;
++//    vector<double> appx_c , det_c;
++//    ifstream sig_inp("appx.txt");
++//    int appx_len = 0;
++//
++//    int det_len = 0;
++//    while (sig_inp) {
++//        double temp;
++//        sig_inp >> temp;
++//        appx_c.push_back(temp);
++//        appx_len++;
++//    }
++//    appx_c.pop_back();
++//    appx_len--;
++//
++//    ifstream sig_inp2("det.txt");
++//    while (sig_inp2) {
++//        double temp;
++//        sig_inp2 >> temp;
++//        det_c.push_back(temp);
++//        det_len++;
++//    }
++//    det_c.pop_back();
++//    det_len--;
+   //  cout << det_len + 1 << endl;
+ 
+-    vector<vector<double>  > coeff(appx_len, vector<double>(2*J + 1,0));
+-     for (int i = 0; i < appx_len; i++) {
+-         coeff[i][0] = i;
++//    vector<vector<double>  > coeff(appx_len, vector<double>(2*J + 1,0));
++//     for (int i = 0; i < appx_len; i++) {
++//         coeff[i][0] = i;
+    // 	 cout << coeff[i][0] << endl;
+-     }
+-
+-     int val = 0;
+-     for (int j= 0; j < J  ; j++ ) {
+-         int temp  = count / (int) pow (2.0, (double) j+1);
+-         for (int i = 0; i <  temp; i++) {
+-                 coeff[i][2 * (j + 1 ) - 1]=appx_c[val + i];
+-                 coeff[i][2 * (j + 1)]=det_c[val + i];
+-
+-         }
+-                 val+=temp;
+-
+-     }
++//     }
++//
++//     int val = 0;
++//     for (int j= 0; j < J  ; j++ ) {
++//         int temp  = count / (int) pow (2.0, (double) j+1);
++//         for (int i = 0; i <  temp; i++) {
++//                 coeff[i][2 * (j + 1 ) - 1]=appx_c[val + i];
++//                 coeff[i][2 * (j + 1)]=det_c[val + i];
++//
++//         }
++//                 val+=temp;
++//
++//     }
++
++//     ofstream gnuout("gnuout.dat");
++//     for (int i = 0; i < appx_len; i++){
++//         for (int j =0; j < 2* J +1; j++) {
++//                 gnuout << coeff[i][j] << " ";
++//         }
++//         gnuout << endl;
++//     }
+ 
+-     ofstream gnuout("gnuout.dat");
+-     for (int i = 0; i < appx_len; i++){
+-         for (int j =0; j < 2* J +1; j++) {
+-                 gnuout << coeff[i][j] << " ";
+-         }
+-         gnuout << endl;
+-     }
+-
+-     sig = original_copy;
++//     sig = original_copy;
+         return 0;
+ }
+ 
+@@ -1960,7 +1966,7 @@
+                         signal.push_back(temp);
+                 }
+ 
+-                int len_sig = signal.size();
++//                int len_sig = signal.size();
+                 int len_lpfilt = lpd.size();
+                 int len_hpfilt = hpd.size();
+                 int len_avg = (len_lpfilt + len_hpfilt) / 2;
+@@ -1978,7 +1984,7 @@
+ 
+                 // Downsampling by 2 gives cA
+                 downsamp(cA_undec, D, cA);
+-                int N = len_sig / 2;
++//                int N = len_sig / 2;
+ 
+                 cA.erase(cA.begin(),cA.begin()+len_avg/2);
+                 cA.erase(cA.end()-len_avg/2,cA.end());
+@@ -2001,12 +2007,12 @@
+                 // File Outputs
+                 filtcoef(wname,lpd,hpd,lpr,hpr);
+ 
+-                fstream appx_s ("appx.txt", fstream::out | fstream::app);
+-                fstream det_s ("det.txt", fstream::out | fstream::app);
+-                for (int i = 0; i < N; i++){
+-                        appx_s << cA[i] << endl;
+-                        det_s << cD[i] << endl;
+-                }
++//                fstream appx_s ("appx.txt", fstream::out | fstream::app);
++//                fstream det_s ("det.txt", fstream::out | fstream::app);
++//                for (int i = 0; i < N; i++){
++//                        appx_s << cA[i] << endl;
++//                        det_s << cD[i] << endl;
++//                }
+ 
+ //		cout << lpd.size() << "filter size" << endl;
+ 
+@@ -2110,12 +2116,12 @@
+             idwt_output.erase(idwt_output.end()- zerop,idwt_output.end());
+ 
+ 
+-        unsigned int count = idwt_output.size();
+-        ofstream gnurecon("gnurecon.dat");
+-        for (unsigned int i = 0;i < count; i++) {
+-                gnurecon << i << " " << idwt_output[i] << endl;
+-        }
+-        gnurecon.close();
++//        unsigned int count = idwt_output.size();
++//        ofstream gnurecon("gnurecon.dat");
++//        for (unsigned int i = 0;i < count; i++) {
++//                gnurecon << i << " " << idwt_output[i] << endl;
++//        }
++//        gnurecon.close();
+ 
+             return 0;
+ }

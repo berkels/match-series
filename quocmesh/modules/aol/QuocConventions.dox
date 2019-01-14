@@ -1,0 +1,192 @@
+/** \ifnot OSDOC
+\page codeConventions Source Code Conventions
+
+The following rules apply to all modules, examples and tools. You should observe them in projects, too.
+
+class- and filenames
+--------------------
+
+- class names: use \c CamelCase, starting with upper case letter
+- member function: use \c camelCase, starting with lower case letter
+- file name: use \c camelCase, starting with lower case letter (exemption: start with upper case,
+  if first word is a proper name, e. g. \c ArmijoSearch.h),<br>
+  use only the following characters:
+  - upper and lower case letters (in particular no umlauts) (<tt>a..z, A..Z</tt>)
+  - digits (<tt>0..9</tt>)
+  - underscore and hyphen (<tt>\_,-</tt>)
+  - periods/full stops (<tt>.</tt>)
+- please use correct English names
+- avoid name conflicts with system header files (e. g. stl headers)
+- include each new module header file to corresponding selfTest
+
+
+templates
+---------
+
+- template parameters: must contain lowercase letters (\c realType and \c RealType are okay, but \c REAL is not)
+- Naming standard for re-exported template parameters: use \c _SomeType as template parameter and
+  <tt>public typedef _SomeType SomeType</tt>, e.g.
+  \code template< typename _DataType > ... typedef _DataType DataType;\endcode
+- If declaration and implementation are separate, the template parameters must have the
+  same name in both cases, that is \c _SomeType. In the implementation, both versions
+  may be used.
+
+
+preprocessor directives
+-----------------------
+
+- after \c #define, USE CAPITAL LETTERS
+  \code
+  #ifndef __BLA_H
+  #define __BLA_H
+  // contents of bla.h
+  #endif
+  \endcode
+- \c #ifdef and similar preprocessor directives are not indented.
+- include guards must be used in all headers, the format is \c __AOL_H
+- openmp critical sections should be named according to the scheme
+  \code
+  namespace_class_{method,other useful identifier}[_number, if needed]
+  \endcode
+  e.g.
+  \code
+  #pragma omp critical (aol_RandomGenerator_getNextRnd)
+  \endcode
+
+
+structure of externals
+----------------------
+
+- standard externals should contain
+  - an include header, marked as a system header
+    \code
+    #ifdef __GNUC__
+    #pragma GCC system_header
+    #endif
+    \endcode
+    to prevent compiler warnings for external code
+  - \c CMakeLists.txt with <tt>QUOC_APPEND_CURRENT_DIR_TO_INCLUDES ( )</tt> to
+    add the header to the include path
+  - the main \c CMakeLists.txt in the root quocmesh directory should have an option
+    <tt>USE_...</tt> (defaulting to \c OFF) that search sets include and link paths
+    to the external code and defines <tt>USE_EXTERNAL_...</tt> automatically.
+  - a short description
+- nonstandard externals may contain (small amounts of) code that
+  is compiled automatically (if necessary) by CMake
+
+
+using externals
+---------------
+
+- all modules (except for those obviously fully depending on an
+  external) must compile without the external being used
+- Programs that use external code also have to compile if the
+  corresponding external is switched off. The executables should then
+  give a useful and informative error message like ''This program
+  can't be used without (<em>corresponding external</em>)''. To achieve
+  this, enclose your header and cpp-files in the following
+  <tt>#ifdef</tt>-construction (external is eigen in this example):
+  \code
+  #ifdef USE_EXTERNAL_EIGEN
+      ... (code that uses the external) ...
+  #endif
+  \endcode
+  In case of executables add the follwing else-part (or a similar one):
+  \code
+  #ifdef USE_EXTERNAL_EIGEN
+    ... (code that uses the external) ...
+  #else
+    int main ( int, char** ) {
+      cerr << "Without the eigen external, this program is useless" << endl;
+      return ( 0 ) ;
+    }
+  #endif
+  \endcode
+
+
+style (indentation, spaces ...)
+-------------------------------
+
+- 2 spaces are used for indentation (no tabs, not 4 spaces etc.)
+- preprocessor directives are not indented at all.
+- <tt>public:</tt> and similar are not indented relative to the class.
+  In both cases, that is the current astyle standard.
+- brackets (placement in lines and spacing around brackets) are used according to the following scheme:
+  \code
+  dummy_method ( aol::Vector<RealType> &vec, RealType factor ) {
+    for ( int i = 0; i < vec.size(); ++i ) {
+      vec[i] = factor * vec[i];
+    }
+  }
+  \endcode
+  and can be enforced automatically by using <tt>util/standardizeSourceFormat.sh</tt> which in turn uses astyle
+
+
+Name convention for methods that import or export data, e. g. aol::Mat A, B inversion (same for transposition etc.)
+-------------------------------------------------------------------------------------------------------------------
+
+- <tt>void A.invert()</tt>: writes \f$A = A^{-1}\f$
+- <tt>B = A.inverse()</tt>: compute and return inverse of \f$A\f$, do not modify \f$A\f$
+- <tt>A.invertFrom(B)</tt>: \f$A = B^{-1}\f$, \f$B\f$ unmodified
+- <tt>A.invertTo(B)</tt>: \f$B = A^{-1}\f$, \f$A\f$ unmodified
+
+
+miscellaneous
+-------------
+
+- comments have to be written in english (except in your own projects, there you can do whatever you want)
+- use special characters only in your own projects and only on your own risk
+
+
+data sets
+---------
+
+- don't commit any data sets (images etc.) except very small data sets for examples or selfTests
+  (keep those in directory \c examples/testdata, files here must be sufficiently free to be usable under quoc license)
+
+
+No convention on ...
+--------------------
+
+- the position of member variables, they may be at the beginning or at the end of a class
+- No general rule on whether implementation should be inside or outside class definition.
+
+
+Rules for Mercurial
+-------------------
+
+- Moving code and changing code (e. g. moving implementation out of class and changing it)
+  should be committed separately to allow diffing.
+- use <tt>.hgignore</tt> to ignore files that will automatically occur when compiling and typical temp files of editors and IDEs,
+  not for personal temporary copies like \c aol.hold
+
+
+Very special things
+-------------------
+
+- use \c aol::Abs instead of \c fabs.
+  But: template specialization is necessary for unsigned data types when needed.
+- Instead of \c M_PI the expressions \c aol::PI or
+  \c aol::NumberTrait<RealType>::pi should be used. Analogously for other mathematical
+  constants (if not available define own NumberTrait).
+- <tt>apply(x, x)</tt> is nowhere forbidden, but produces (mostly) unpredictable output.
+  <tt>apply</tt> should check for this and throw an exception or contain a comment that <tt>apply(x, x)</tt>
+  works, we will not change this in all old apply methods now. Methods that explicitly
+  support an in-place <tt>apply</tt>, should implement the function <tt>applySingle(x)</tt>.
+- Use <tt>for</tt>-loops where possible, even simple things like
+  \code
+  a[0] = expression ( 0 ); a[1] = expression ( 1 )
+  \endcode
+  should be done in a <tt>for</tt>-loop.
+- In methods like \c getMinValue() or \c getMaxValue() don't initialize the
+  first value with &plusmn; infinity, but with <tt>vector[0]</tt> (otherwise, if the size of
+  the vector is 0, it might happen that &plusmn; infinity is returned).<br>
+  If it's not really really obvious that in no case anything can ever go wrong with the
+  <tt>[]</tt>-operator of the vector, use \c get and \c set (then bounds-checking
+  is applied in the debug-mode).
+- use \c NON_PARALLEL_STATIC if \c static variables should not be static when using
+  parallelization (due to conflicting write access), e.g. if \c static is only used for
+  performance reasons. If they always need to be static, prevent parallel write access.
+
+\endif
+*/

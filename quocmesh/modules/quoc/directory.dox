@@ -1,0 +1,59 @@
+/** \namespace qc
+ *  \brief Numerics on Quad/oC-tree grids.
+ *  See Module Documentation \ref quocdoc.
+ */
+
+//! @dir
+//! @brief Numerics on Quad/oC-tree grids.
+//! See Module Documentation @ref quocdoc.
+
+/** \page quocdoc
+ *  \section quocdoc_arrayFormat The Quoc array format
+
+Arrays can be imported and exported in floating point precision in a PGM style format.
+
+A quoc array file consists of a simple header followed by the raw array values. The first character of the file indicates the dimension of the data:
+
+Char  | Dimension
+----- | -------------
+O     | 1D
+P     | 2D (same as PGM)
+Q     | 3D
+
+The second character indicates how the raw data is stored, e.g. 9 means that the values are stored
+as binary in double precision:
+
+Char  | Type           | Encoding
+----- | -------------- | --------
+2     | unsigned char  | ASCII
+5     | unsigned char  | binary
+7     | float          | ASCII
+8     | float          | binary
+9     | double         | binary
+a     | unsigned short | binary
+b     | signed short   | binary
+
+These two characters are followed by a \c '\\n', ending the first line of the file.
+
+The first line can be followed by a number of comment lines that are indicated with a \c '#' as first line character. The comment lines need to be skipped when parsing the header.
+
+The following line contains one to three numbers, depending on the dimension.
+These are the number of pixels in x, y and z direction respectively.
+
+The next line contains the maximal value of the data set stored as int. The header ends with a line end, i.e. there is a \c '\\n' after the maximal value.
+
+The rest of the file are NumX*NumY*NumZ values encoded as announced by the second character of the header, e.g. 9 means raw binary double values.
+
+As an example, the following is a valid header for a 2D array of size 128x128 in binary double format:
+\verbatim
+P9
+# This is a QuOcMesh file of type 9 (=RAW DOUBLE) written 18:09 on Thursday, 18 February 2016
+128 128
+35
+\endverbatim
+
+In the cases \c 'P2' and \c 'P5', the format coincides with the PGM format.
+
+Depending on the suffix of the filename, the files are compressed: In addition to the commonly used suffixes like \c ".bz2", the suffixes \c ".q2bz" and \c ".q3bz" indicate that the file is compressed with bzip2, i.e. the file needs to be uncompressed before it can be parsed as described above. Furthermore, \c ".q2bz" and \c ".q3bz" indicate that the array is 2D or 3D, respectively.
+
+*/

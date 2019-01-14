@@ -1,0 +1,140 @@
+/** \ifnot OSDOC
+\page mercurial Mercurial
+\section insallingmercurial Installing mercurial and TortoiseHG
+
+\subsection opensuse113 openSuse 11.3
+
+Use
+\verbatim
+/home/prog/hg/bin/hg
+\endverbatim
+(add /home/prog/hg/bin to your <code>PATH</code> in .bashrc e.g. if you want and if you do not have hg installed locally)
+
+
+For TortoiseHG install <code>python-qscintilla</code> and <code>python-iniparse</code> through yast / zipper:
+\verbatim
+zypper in python-qscintilla
+zypper in python-iniparse
+\endverbatim
+and use
+\verbatim
+/home/prog/tortoisehg/thg
+\endverbatim
+
+For this to work you need to have <code>/home/prog/otherEnvVars.sh</code>
+sourced (s. article "GccPfadSetzen" in our internal wiki) or extend your
+<code>PYTHONPATH</code> manually.
+
+\subsection opensuse121 openSuse 12.1
+
+Install mercurial through yast / zypper
+\verbatim
+zypper in mercurial
+\endverbatim
+
+
+If you want to use TortoiseHG, add repository
+\verbatim
+http://ftp5.gwdg.de/pub/linux/suse/opensuse/repositories/devel:/tools:/scm/openSUSE_12.1
+\endverbatim
+and
+\verbatim
+zypper in tortoisehg
+\endverbatim
+
+Note: This will not check if the version of tortoisehg is compatible with
+installed mercurial. If things fail try to install mercurial from the
+repository above.
+
+\subsection ubuntu1204 Ubuntu 12.04 LTS
+Use the versions of mercurial and TortoiseHG provided by the repositories.
+\verbatim
+aptitude install mercurial tortoisehg
+\endverbatim
+For more current versions, you can add the tortoisehg PPA.
+\verbatim
+add-apt-repository "ppa:tortoisehg-ppa/releases"
+\endverbatim
+
+
+\section configuringmercurial Configuring Mercurial
+Before using Mercurial for the first time each user needs to initialize the hg configuration file with the following:
+
+\verbatim
+[extensions]
+eol =
+mq =
+rebase = 
+
+[ui]
+username = John Doe <john@example.com>
+
+[hostfingerprints]
+source-numod.ins.uni-bonn.de = 22:4B:2E:0C:A3:A0:5F:64:BE:23:90:99:4E:AC:69:99:77:CF:0B:22
+
+[auth]
+source-numod.ins.uni-bonn.de.prefix = source-numod.ins.uni-bonn.de
+source-numod.ins.uni-bonn.de.username = svnhttpsusername
+\endverbatim
+Of course the usernames have to be adapted. From the command line this is done by creating and editing <code>~/.hgrc</code> (Linux) or <code>%USERPROFILE%\\Mercurial.ini</code> (Windows). Alternatively, this can be done using the TortoiseHG Workbench with "File -> Settings... -> username's global settings -> Edit File". The TortoiseHG may already contain some entries, but it should be save just to add the above to the file.
+
+When using the TortoiseHG version installed under /home/prog add the following as first line of your <code>~/.hgrc</code>:
+\verbatim
+%include /home/prog/tortoisehg/contrib/mergetools.rc
+\endverbatim
+
+\verbatim
+%include /home/prog/tortoisehg/contrib/mergetools.rc
+\endverbatim
+
+In case TortoiseHG does not automatically detect the diff / merge tool you would like to use, the tool needs to be defined in your <code>~/.hgrc</code>. For instance, KDiff3 can be defined as follows (the location of the binary of course needs to be adapted to your system):
+\verbatim
+[extdiff]
+cmd.kdiff3 = /opt/local/bin/kdiff3
+
+[merge-tools]
+kdiff3.args = $base $local $other -o $output
+\endverbatim
+
+\subsection mercurialpassword Safely saving the password
+The mercurial_keyring extension allows to safely store the password using the system specific password database. TortoiseHG comes with this extension, the command line client does not. If you enable it (done by ticking "File -> Settings... -> username's global settings -> Extensions -> mercurial_keyring"), the password should be saved automatically after it was entered once (likely needs the [auth] section of the hg config file to be filled out as described above).
+
+\section usingmercurial Using mercurial
+
+\subsection mercurialcloningrepository Cloning a repository
+
+\subsubsection tortoisehg TortoiseHG
+File -> Clone repository
+\verbatim
+Source: https://source-numod.ins.uni-bonn.de/hg/quocmesh
+Destination: <FolderWhereTheRepositoryShouldBeStored>
+\endverbatim
+
+\subsubsection mercuriallinuxcmd Linux command line
+\verbatim
+hg clone https://source-numod.ins.uni-bonn.de/hg/quocmesh <FolderWhereTheRepositoryShouldBeStored>
+\endverbatim
+
+\subsubsection mercurialssh Using SSH
+With linux you can use ssh to benefit from key authentication etc.
+This will bypass the rhodecode server but should work fine with plain mercurial.
+To do so use the following URI:
+\verbatim
+ssh://source-numod.ins.uni-bonn.de//home/hg/repo/quocmesh
+\endverbatim
+The double slash is really important!
+
+\subsubsection hglocalignores Local ignores
+Sometimes one wants to keep files in the local source directory that may not be commited to the source repository
+(for instance, when using XCode, `CMakeLists.txt` symlinks to `CMakeLists.project.txt` are put into each folder
+selected with `SELECTED_STDPROJECTS`). To prevent such files from being listed as local changes, one can create
+a local ignore list. For this, one simply has to create <code>~/.hgignore</code> and list all files that should
+be ignored in this file, e.g.
+\verbatim
+examples/heatequation/CMakeLists.txt
+selfTest/aol/CMakeLists.txt
+selfTest/quoc/CMakeLists.txt
+\endverbatim
+
+\endif
+*/

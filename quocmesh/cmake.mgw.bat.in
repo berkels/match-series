@@ -1,0 +1,6 @@
+# Wrapper script template for MinGW to add the path where libquocmesh.dll is stored
+# to PATH so that the shared library is found without further user actions.
+TEMPPATH=@CMAKE_BINARY_DIR@
+# cmake starts the path with "DRIVERLETTER:", but MinGW needs "/DRIVERLETTER".
+export PATH=$PATH:/${TEMPPATH//[:]/}
+@BASENAME@ $@

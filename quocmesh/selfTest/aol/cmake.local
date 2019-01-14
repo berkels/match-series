@@ -1,0 +1,4 @@
+QUOC_ADD_TEST_FROM_CPP_BASENAME ( selfTest )
+IF ( NOT WIN32 )
+  QUOC_ADD_TEST_WITH_DEPENDENCY ( ${CMAKE_SOURCE_DIR}/selfTest/aol/runExceptionTest.sh exceptionTest ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} )
+ENDIF ( )

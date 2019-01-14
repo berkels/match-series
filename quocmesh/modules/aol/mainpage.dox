@@ -1,0 +1,109 @@
+/** \mainpage Using and Programming the QuocMesh Library
+ *
+ *  Written by the QuocMesh Collective
+ *
+ *  <a href="../manual.pdf">Introduction (PDF)</a><br>
+ *  \ifnot OSDOC
+ *  New introduction (doxygen): \ref manual
+ *  \endif
+ *
+ *  <h2>Module Documentation and Dependencies</h2>
+ *
+ *  <ul>
+ *  <li>\ref aoldoc "Using module aol" <br>Needs module %quoc</li>
+ *  <li>\ref quocdoc "Using module quoc" <br>Needs module %aol<br>&nbsp;</li>
+ *  \ifnot OSDOC
+ *  <li>\ref bemdoc "Using module bem" <br>Needs modules %aol, %quoc</li>
+ *  <li>\ref DTGriddoc "Using the Dynamic Tubular Grid (dtgrid)" <br>Needs modules %aol, %multigrid, %quoc, %tpcfe</li>
+ *  \endif
+ *  <li>\ref eikonaldoc "Using module eikonal" <br>Needs modules %aol, %multigrid, %quoc, %tpcfe</li>
+ *  <li>\ref grapedoc "Using module grape" <br>Needs modules %aol, %quoc</li>
+ *  <li>\ref imgprocdoc "Using module imgproc" <br>Needs modules %aol, %quoc</li>
+ *  <li>\ref multigriddoc "Using module multigrid" <br>Needs modules %aol, %quoc</li>
+ *  <li>\ref narrowbanddoc "Using module narrowband" <br>Needs modules %aol, %multigrid, %quoc, %tpcfe</li>
+ *  <li>\ref openmeshdoc "Using module openmesh" <br>Needs modules %aol, %quoc</li>
+ *  <li>\ref qcsmdoc "Using module qcsm" <br>Needs modules %aol, %multigrid, %quoc, %surf, %tpcfe</li>
+ *  \ifnot OSDOC
+ *  <li>\ref surfdoc "Using module surf" <br>Needs modules %aol, %multigrid, %quoc</li>
+ *  \endif
+ *  <li>\ref tpcfedoc "Using the Composite Finite Element Classes (tpcfe)" <br>Needs modules %aol, %multigrid, %quoc</li>
+ *  </ul>
+ *
+ * \ifnot DOC_LIB_ONLY
+ * <h2>Project Ownership and Documentation</h2>
+ *
+ * \ref projectTable "Table of Projects"
+ * \endif
+ *
+ * <hr>
+ * <h2>Conventions</h2>
+ * The following rules apply to all modules, examples and tools. You should observe them in projects, too.<br>
+ *  <A HREF="../InputQuocConventions.pdf">Source Code Conventions(PDF)</A><br>
+ * \ref codeConventions
+
+ * <h3>Adding a new source code file to the library</h3>
+ * Please regard the following points when you add a new source code file to the library:
+ * <ul>
+ *   <li> if it is a header file: add include guards</li>
+ *   <li> if it is a header file in a module: include it in the selfTest of the corresponding module</li>
+ *   <li> policy for externals: should contain single header marked as system header (to prevent compiler warnings from external code). Name conflicts should be avoided. Wrapper classes should be placed in corresponding module with suitable #ifdef USE_EXTERNAL_*
+ * </ul>
+ * \ifnot OSDOC
+ * <h3>Publishing projects/code or documenting reasons not to</h3>
+ * For newly finished projects, there are three possible approaches:
+ * <ol>
+ *   <li>Explicitly publish by moving the directroy out of the "internal"
+ * subtree.</li>
+ *   <li>Document the reason(s) not to publish or conditions when to publish in the
+ * directory.dox of the project.</li>
+ *   <li>Do nothing, which means the project will never be published.</li>
+ * </ol>
+ * Papers can be referenced for any kind of project in the directory.dox,
+ * preferrably by DOI.
+ * <h3>Mercurial</h3>
+ * <p>For information on Mercurial see the \ref mercurial section of this
+ * documentations and <a href="http://mercurial.selenic.com/guide/">the Mercurial
+ * guide</a>. You may also want to consider using TortoiseHg.</p>
+ * <p>In general, please mind a few general guidelines:
+ * When you commit<br>
+ * <ul>
+ * <li>Please write log messages that describe what you did</li>
+ * <li>Make sure you do not commit things you do not want to commit</li>
+ * </ul>
+ * Before you push<br>
+ * <ul>
+ * <li>Test whether your code compiles</li>
+ * <li>If you made changes to modules, make sure that all modules, projects etc. in
+ cmake.selection.default compile</li>
+ * <li>Be careful not to create new heads (do not use -f carelessly, rebase or
+ merge instead)</li>
+ * </ul></p>
+ * \endif
+ * <h3>Makefile mechanism</h3>
+ * CMake is used to manage the QuocMesh build process. For an introduction see \ref cmake.
+ *
+ * <hr>
+ * <h2>List of supported compilers</h2>
+ * <ul>
+ *   <li>gcc 4.6.0 (checked by Benedict Geihe, Universit&auml;t Bonn, May 2011)</li>
+ *   <li>gcc 4.6.1 (checked by Benedict Geihe, Universit&auml;t Bonn, August 2011)</li>
+ *   <li>gcc 4.6.3 (checked by Sascha T&ouml;lkes, Universit&auml;t Bonn, April 2013), this is the recommended gcc version.</li>
+ *   <li>gcc 4.7.0 (checked by Benedict Geihe, Universit&auml;t Bonn, March 2012)</li>
+ *   <li>gcc 4.8.0 (checked by Benedict Geihe, Universit&auml;t Bonn, April 2013)</li>
+ *   <li>gcc 4.8.2 (checked by Sascha T&ouml;lkes, Universit&auml;t Bonn, November 2014)</li>
+ *   <li>gcc 4.9.2 (checked by Benedict Geihe, Universit&auml;t Bonn, October 2014)</li>
+ *   <li>clang 3.5.0 (checked by Benedict Geihe, Universit&auml;t Bonn, December 2014)</li>
+ * </ul>
+ *
+ * <h2>Compilers known not to work</h2>
+ * <ul>
+ *   <li>clang 2.8 (checked by Ole Schwen, Fraunhofer MEVIS)</li>
+ * </ul>
+ */
+
+/** \ifnot DOC_LIB_ONLY
+ *  \page projectTable Project Ownership and Documentation
+ *
+ *  INSERT_PROJECT_TABLE_HERE
+ *  \endif
+ */

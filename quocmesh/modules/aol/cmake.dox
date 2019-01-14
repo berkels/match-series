@@ -1,0 +1,118 @@
+/** \page cmake CMake
+CMake is a cross-platform, open-source build system, that shall replace our old make mechanism and already replaced our Visual Studio projects / solution files. It lives at a higher abstraction level than our makefiles for example. The CMake "makefiles" are written in a platform independent way and CMake itself creates platform specific files that will handle the actual build process. Under Linux for example, CMake is used to generates a classical Makefile from the abstract CMake "makefile". So after calling CMake, you will call make in a manner very similar to our old make mechanism to build the library and your projects.
+
+One of the nice properties of CMake is that it allows (and encourages) out-of-place builds. That means to completely separate the source files, i.e. your quocmesh checkout, from all the build files, i.e. the compiled libraries and executables. In particular, this allows you to have one checkout compiled in debug and in release mode at the same time (no more "make distclean" + "util/configure" to switch from debug to release for instance). Or have a checkout compiled and optimized for two different machines, like eolos and brahma. One can also put the build directory in a nosave dir. This way the important source files will still be backed up, while the huge, automatically generated binaries won't eat your quota.
+
+\section cmakeuse How to use cmake
+Since our system does not always know the path to external packages (cuda,
+ahmed, openmesh, cimg, ...) it is useful to add (i.e. to source) the line 
+\verbatim
+. /home/prog/cmakeEnvVars.sh
+\endverbatim
+to your <code>~/.bashrc</code> file.
+Log off your current terminal and on again to make changes take effect.
+Create a new folder (may be located anywhere, but it is suggested to locate
+the folder next to your "source folder" usually named 'quocmesh') called the
+build or binary folder. All executables will be placed in (subfolders of) this
+build folder.
+\verbatim
+mkdir ./build
+\endverbatim
+
+Create a file <code>cmake.selection</code> in the build folder. It allows you to select which parts of the quocmesh library you want to compile (substitute for the old <code>makefile.selection</code>). Example:
+\verbatim
+# modules
+SET ( SELECTED_MODULES modules/aol modules/quoc )
+
+# projects that have their own CMakeLists.txt.
+SET ( SELECTED_PROJECTS )
+
+# projects that use CMakeLists.project.txt.
+SET ( SELECTED_STDPROJECTS
+      selfTest/aol
+      selfTest/quoc
+      examples/vectorMatrixOps
+      projects/myProject
+     )
+\endverbatim
+Alternatively you might want to use <code>cmake.selection.default</code> from
+the quocmesh root directory as a template.
+<ul>
+<li> Run cmake in the build folder created above. As always there are two ways to do this.
+ The first one is the command line procedure with
+ \verbatim
+ cmake <options> <pathToQuocmeshCheckout>
+ \endverbatim
+ (can be seen as cmake's replacement for util/configure)<br/>
+ Options have the following syntax: <code>-D<name>=<value></code>
+ The most important one is <code>-DCMAKE_BUILD_TYPE=Release</code> or <code>-DCMAKE_BUILD_TYPE=Debug</code> for release or debug mode<br>
+ Here is a list of all options currently available: \ref cmake_options
+
+Generators can be specified by <code>-G"<value>"</code>, supported generator calls are:
+<ul>
+<li><code>-G"Unix Makefiles"</code><br>
+<li><code>-G"Eclipse CDT4 - Unix Makefiles"</code><br>
+<li><code>-G"MinGW Makefiles"</code><br>
+<li><code>-G"MSYS Makefiles"</code><br>
+<li><code>-G"Visual Studio 10"</code><br>
+<li><code>-G"Visual Studio 10 Win64"</code><br>
+<li><code>-GXcode</code><br>
+</ul>
+cmake automatically looks for the libraries that are used by some quocmesh functions, such as libbz2, libfftw, libipopt etc. If it finds the libraries (it should find "our" libraries in /home/prog if cmakeEnvVars.sh was executed #:previsly, cf. above) it automatically links them and sets the appropriate USE_LIB_XXX define.
+If one has installed a new library, one has to delete CMakeCache.txt in the build directory before calling cmake again, otherwise it won't find the new library.
+Alternatively <code>cmake-gui</code> will present you a nice graphical
+frontend, where you can select options and specify additional paths to
+libraries. After you have done your selection press first 'configure' and then
+'generate'.</li>
+<li> Run make in the build folder created above with
+<code>make</code>
+You can also use N kernels by typing
+<code>make -jN</code></li>
+<li>Selftests also work
+<code>make test</code></li>
+<li>Documentation is experimental
+<code>make doclib</code></li>
+<li>The following additional DEFINES are available
+<ul>
+<li>BOUNDS_CHECK (set in debug mode): for data access, check whether the index is
+in the allowed range. Else, the program should throw an exception explaining what is
+going wrong where.</li>
+<li>DEBUG (set in debug mode): checks during execution that only print output if
+something is going wrong</li>
+<li>VERBOSE (not set in debug mode): output during execution even if everything
+is all right. Defining this globally results in thousands of lines of output, so this
+should only be turned on locally.</li>
+</ul>
+</li>
+</ul>
+
+\subsection cmakeeclipse Eclipse with cmake
+Use the Eclipse CDT4 Generator. See the <a href="http://www.cmake.org/Wiki/Eclipse_CDT4_Generator">introduction on cmake.org</a>.
+
+To use Eclipse (>= 4.2) with CMake first configure your binary folder with the
+following bash (make sure, CMAKE_PREFIX_PATH is set correctly):
+
+\verbatim
+#!/bin/bash
+cmake -G"Eclipse CDT4 - Unix Makefiles" -D_ECLIPSE_VERSION=4.2 -DCMAKE_BUILD_TYPE=Debug -DUSE_MERCURIAL=0 -DUSE_OPENMP=0 -DDYNAMIC_LINKING=1 -DUSE_PROFILING=0 -DUSE_SUITESPARSE=1 -DUSE_DOXYGEN=0 -DUSE_GRAPE=0 -DUSE_FOX=1 -DUSE_AHMED=0 -DUSE_IPOPT=0 -DUSE_OPENMESH=0 -DUSE_CIMG=0 -DUSE_FFTW=1 -DUSE_TRIANGLE=0 -DUSE_CUDA=0 -DUSE_SSE=0 -DUSE_SUBVERSION=0 -DUSE_LAPACK=1 -DUSE_BLAS=1 ../quocmesh
+\endverbatim
+
+Afterwards create a "cmake.selection" file in this folder.
+
+In Eclipse go to File->Import->General->Existing Projects into Workspace. Then select the root directory.
+You have to configure the Run configurations and select the right binary.<br>
+To accelerate compile time go to Project->Properties C/C++ Make Project->Make
+Builder and add "-j4" or "-j8" to the Build Command. Note: At least Eclipse 4.3 SR 1 (Kepler) seems to set this automatically under some circumstances.
+
+Be sure to configure Preferences->C/C++->Code Style->Formatter to follow our indentation convention (spaces only, no tabs, indentation size 2).
+
+To work on a certain application, it is useful to select an active make target. In the Project Explorer under [Targets] right click the application you are working on, select Make Targets -> Build, then select the Build target and click on the Build button. Now you can compile your application with a single keyboard shortcut invoking "Rebuild Last Target".
+
+To reduce the number of false positives of the code analyzer it is important to disable Preferences->C/C++->Indexer->Allow heuristic resolution of includes.
+
+Another useful option is Preferences->General->Workspace->Save automatically before build.
+
+To debug an application, it is necessary to define a debug configuration under Run->Debug Configurations that selects the corresponding executable and necessary command line argument. 
+
+To debug a 64 bit application under OS X, it may be necessary to activate the Mach-O 64 Parser under Project->Properties->C/C++ Make Project->Binary Parser.
+*/

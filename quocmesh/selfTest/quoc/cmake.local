@@ -1,0 +1,9 @@
+# Copy the example files necessary for the self test.
+FILE ( COPY ${CMAKE_SOURCE_DIR}/examples/testdata/image_129.pgm.bz2
+            ${CMAKE_SOURCE_DIR}/examples/testdata/volume_9.dat.bz2
+       DESTINATION ${CMAKE_BINARY_DIR}/examples/testdata/ )
+
+QUOC_ADD_TEST_FROM_CPP_BASENAME ( sparsetest )
+QUOC_ADD_TEST_FROM_CPP_BASENAME ( simplexSelfTest )
+QUOC_ADD_TEST_FROM_CPP_BASENAME ( selfTest )
+
