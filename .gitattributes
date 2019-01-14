@@ -1,0 +1,23 @@
+# Set the default behavior, in case people don't have core.autocrlf set.
+* text=auto
+
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout.
+*.c text
+*.cl text
+*.cpp text
+*.dox text
+*.h text
+*.hpp text
+*.m text
+*.par text
+cmake.local text
+CMakeLists.txt text
+
+# Declare files that will always have LF line endings on checkout.
+*.sh text eol=lf
+
+# Denote all files that are truly binary and should not be modified.
+*.bz2 binary
+*.ico binary
+*.icns binary
