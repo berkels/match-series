@@ -65,7 +65,7 @@ public:
 #ifdef USE_LIB_NETCDF
     int retval;
     if ((retval = nc_close(_ncid)))
-      throw aol::Exception ( nc_strerror(retval), __FILE__, __LINE__ );
+      cerr << aol::color::error << "Error in ~NetCDFReader: " << nc_strerror(retval) << endl;
 #endif
   }
 

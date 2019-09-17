@@ -91,8 +91,10 @@ public:
   void setSaveName ( const char *saveName, const int outerSteps = -1 ) {
     if ( outerSteps != -1 )
       sprintf ( _saveNameTrunc, "%s_%02d", saveName, outerSteps );
-    else
+    else {
       strncpy ( _saveNameTrunc, saveName, 1023 );
+      _saveNameTrunc[1023] = 0;
+    }
   }
   void setSaveName ( const char *saveName, const char *saveDir, const int outerSteps ) {
     sprintf ( _saveNameTrunc, "%s_%02d", saveName, outerSteps );
@@ -104,6 +106,7 @@ public:
   //! \note The save directory name is assumed to be terminated with '/'.
   void setSaveDirectory ( const char *saveDir )                   {
     strncpy ( _saveDirectory, saveDir, 1023 );
+    _saveDirectory[1023] = 0;
   }
   const char* getSaveDirectory () const                           {
     return _saveDirectory;

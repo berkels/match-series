@@ -355,7 +355,7 @@ int main( int, char** ) {
 
         success &= ( ( abs( array_orig.get(1, 0, 2) - 23.0 ) + abs( array_struct.get(1, 0, 2) - 17.0) ) < 1e-6 );
 
-        array_default = array_default; // check whether self-assignment is treated correctly
+        array_default = *&array_default; // check whether self-assignment is treated correctly
 
       } // End of Scope - destroy all array copies
 
@@ -394,7 +394,7 @@ int main( int, char** ) {
 
         success &= ( ( abs( array_orig.get(1, 2) - 23.0 ) + abs( array_struct.get(1, 2) - 17.0) ) < 1e-6 );
 
-        array_default = array_default; // check self-assignment
+        array_default = *&array_default; // check self-assignment
 
       } // End of Scope - destroy all array copies
 
@@ -433,7 +433,7 @@ int main( int, char** ) {
 
         success &= ( ( abs( array_orig.get(1, 0, 2) - 23.0 ) + abs( array_struct.get(1, 0, 2) - 17.0) ) < 1e-6 );
 
-        array_default = array_default; // check self-assignment
+        array_default = *&array_default; // check self-assignment
 
       } // End of Scope - destroy all array copies
 

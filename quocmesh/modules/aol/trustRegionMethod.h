@@ -1065,6 +1065,10 @@ public:
   virtual void applyAdd( const VectorType &/*Arg*/, VectorType &/*Dest*/ ) const {
     throw aol::Exception ( "aol::TrustRegionMethod needs suitesparse! Compile with -DUSE_SUITESPARSE", __FILE__, __LINE__ );
   }
+
+  virtual void applySingle( VectorType &/*ArgDest*/ ) const {
+    throw aol::Exception ( "aol::TrustRegionMethod needs suitesparse! Compile with -DUSE_SUITESPARSE", __FILE__, __LINE__ );
+  }
 };
 
 #endif

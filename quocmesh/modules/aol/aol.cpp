@@ -428,7 +428,7 @@ int countDigitsOfNumber ( const int N ) {
 }
 
 unsigned int crc32 ( const void* const ptr, const unsigned int size ) {
-  const unsigned char* const data = static_cast< const unsigned char* const >( ptr );
+  const unsigned char* const data = static_cast< const unsigned char* >( ptr );
   const unsigned int crc32Poly = 0xEDB88320;
   unsigned int dwarf = 0xffffffff;
   for ( uint64_t i = 0; i < 8 * size; ++i ) {

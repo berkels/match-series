@@ -45,7 +45,7 @@ int main ( int argc, char **argv ) {
 
     const string inFileName = argv[1];
 
-    std::ifstream in ( inFileName.c_str() );
+    std::ifstream in ( inFileName.c_str(), std::ios::binary );
 
     if ( in.good() == false )
       throw aol::IOException ( aol::strprintf ( "Error opening file \"%s\"", inFileName.c_str() ).c_str(), __FILE__, __LINE__ );

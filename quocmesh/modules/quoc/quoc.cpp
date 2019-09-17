@@ -45,6 +45,9 @@ const char *getDefaulSuffixOfSaveType ( const qc::SaveType Type, const qc::Dimen
     case PNG_2D:
       return ".png";
       break;
+    case NETCDF:
+      return ".nc";
+      break;
     default:
       throw aol::Exception ( "qc::getDefaulSuffixOfSaveType: Unsupported SaveType", __FILE__, __LINE__ );
       break;

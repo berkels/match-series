@@ -155,8 +155,8 @@ void qc::ScalarArray<_DataType, qc::QC_1D>::save ( ostream &out, qc::SaveType ty
   // make sure comment starts with '#'
   if ( comment[0] != '#' ) {
     info[0] = '#';
-    strncpy ( info + 1, comment, 4095 );
-    info[strlen ( comment ) ] = 0;
+    strncpy ( info + 1, comment, 4094 );
+    info[4095] = 0;
     comment = info;
   }
 
@@ -336,8 +336,8 @@ void qc::ScalarArray<_DataType, qc::QC_2D>::save ( ostream &out, qc::SaveType ty
   // make sure comment starts with '#'
   if ( comment[0] != '#' ) {
     info[0] = '#';
-    strncpy ( info + 1, comment, 4095 );
-    info[strlen ( comment ) ] = 0;
+    strncpy ( info + 1, comment, 4094 );
+    info[4095] = 0;
     comment = info;
   }
 
@@ -1212,8 +1212,8 @@ void qc::ScalarArray < _DataType, qc::QC_3D >::save ( ostream &out, qc::SaveType
 
   if ( comment[0] != '#' ) {
     info[0] = '#';
-    strncpy ( info + 1, comment, 4095 );
-    info[strlen ( comment ) ] = 0;
+    strncpy ( info + 1, comment, 4094 );
+    info[4095] = 0;
   }
 
   out << "Q";
@@ -1721,7 +1721,7 @@ void qc::netCDFgetDepthFirstDataAndGroups ( const char *fileName, std::vector<st
       if ((retval = nc_inq_varndims(grpid, varids[varidx], &ndimsp)))
         throw aol::Exception ( nc_strerror(retval), __FILE__, __LINE__ );
       
-      if ( ndimsp == dimension )
+      if ( ndimsp == static_cast<int> ( dimension ) )
         break;
       else
         ++varidx;

@@ -173,7 +173,7 @@ public:
 
   void loadMetaImageFile ( const char *fileName );
 
-  void saveASCII ( const char *FileName, const aol::Format &OutFormat = aol::scientificFormat ) {
+  void saveASCII ( const char *FileName, const aol::Format &OutFormat = aol::scientificFormat ) const {
     std::ofstream file ( FileName );
     for ( int i = 0; i < this->getNumX(); ++i )
       file << OutFormat ( this->get ( i ) ) << "\t";
@@ -937,7 +937,7 @@ public:
   void save ( ostream &out, SaveType type, const char *comment = NULL ) const;
 
 
-  void saveASCII ( const char *FileName, const aol::Format &OutFormat = aol::scientificFormat ) {
+  void saveASCII ( const char *FileName, const aol::Format &OutFormat = aol::scientificFormat ) const {
     std::ofstream file ( FileName );
     for ( int j = 0; j < this->getNumY(); ++j ) {
       for ( int i = 0; i < this->getNumX(); ++i )

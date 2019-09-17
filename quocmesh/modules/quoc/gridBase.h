@@ -907,11 +907,13 @@ protected:
         coord[2] = index / f;
         index = index % f;
       }
+      /* fall-thru */
       case QC_2D: {
         const int f = width;
         coord[1] = index / f;
         index = index % f;
       }
+      /* fall-thru */
       case QC_1D:
         coord[0] = index;
         break; // ok here

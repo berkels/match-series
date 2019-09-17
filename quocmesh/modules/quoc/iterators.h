@@ -54,10 +54,14 @@ public:
         _current[Dim-1] = _upper[Dim-1];
   }
 
-  RectangularIteratorBase ( const typename aol::VecDimTrait<int, Dim>::VecType &Lower, const typename aol::VecDimTrait<int, Dim>::VecType &Upper ) : _lower ( IteratedType ( Lower ) ), _upper ( IteratedType ( Upper ) ), _current ( IteratedType ( _lower ) ) {
-    for ( short int i = 0; i < Dim; ++i )
+  RectangularIteratorBase ( const typename aol::VecDimTrait<int, Dim>::VecType &Lower, const typename aol::VecDimTrait<int, Dim>::VecType &Upper ) : _lower ( ), _upper ( ), _current ( ) {
+    for ( short int i = 0; i < Dim; ++i ) {
+      _lower[i] = Lower[i];
+      _upper[i] = Upper[i];
       if ( Lower[i] != _lower[i] || Upper[i] != _upper[i] )
         throw aol::Exception ( "RectangularIteratorBase: integer to short conversion produced overflow", __FILE__, __LINE__ );
+    }
+    _current = _lower;
     for ( int i = 0; i < Dim; ++i )
       if ( _lower[i] >= _upper[i] ) // then the iterated set is empty, i.e. we may set _current such that atEnd returns true
         _current[Dim-1] = _upper[Dim-1];

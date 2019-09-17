@@ -1095,7 +1095,7 @@ int main( int, char** ) {
       vec_orig.resize( 30 ); // shorter than before
       failed = failed || ( abs ( vec_orig[15] - 0.0 ) > 1.0e-6 );
 
-      vec_orig = vec_orig; // check whether self-assignment is treated correctly
+      vec_orig = *&vec_orig; // check whether self-assignment is treated correctly
 
       // check whether eraseFirstOccurence works properly
       aol::Vector<int> intVec ( 3 );
@@ -1144,7 +1144,7 @@ int main( int, char** ) {
 
       failed = failed || ( abs( mvec_orig[1][1] - 23.0 ) > 1e-6 );
 
-      mvec_orig = mvec_orig;
+      mvec_orig = *&mvec_orig;
 
       if( !failed )
         cerr << "OK." << endl;
@@ -1175,7 +1175,7 @@ int main( int, char** ) {
       bf2.set ( 2, false );
       failed = failed || ( bf == bf2 );
 
-      bf = bf;
+      bf = *&bf;
 
       if( !failed )
         cerr << "OK." << endl;

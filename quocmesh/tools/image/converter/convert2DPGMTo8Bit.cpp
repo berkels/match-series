@@ -17,15 +17,14 @@ typedef float RType;
 int main ( int argc, char **argv ) {
 
   try {
-    char inputFileName[1024];
-    char outputFileName[1024];
+    std::string inputFileName;
 
     if ( ( argc < 2 ) || ( argc > 6 ) ){
       cerr << "USAGE: " << argv[0] << " <input_file> [divideInputBy255] [onlySaveScaled] [removeInf] [saturatedEntryPercentage]" << endl;
       return EXIT_FAILURE;
     }
     if ( argc >= 2 ) {
-      sprintf ( inputFileName, "%s",  argv[1] );
+      inputFileName = argv[1];
     }
     const bool divideInputBy255 = ( argc >= 3 ) ? ( atoi(argv[2]) != 0 ) : false;
     const bool onlySaveScaled = ( argc >= 4 ) ? ( atoi(argv[3]) != 0 ) : false;
@@ -49,16 +48,16 @@ int main ( int argc, char **argv ) {
 
       a.setAllMasked ( ( minValue + maxValue ) / 2, infMask );
     }
-    sprintf ( outputFileName, "%s_8.png", inputFileName );
+    const std::string outputFileName = inputFileName + "_8.png";
     a.setQuietMode ( true );
     a.setOverflowHandling ( aol::CLIP_THEN_SCALE, 0., 1. );
     if ( onlySaveScaled == false )
-      a.savePNG ( outputFileName );
+      a.savePNG ( outputFileName.c_str() );
 
     qc::DefaultArraySaver<RType, qc::QC_2D> saver ( true, true );
     if ( saturatedEntryPercentage > 0 )
       saver.setEnhanceContrastSaturationPercentage ( saturatedEntryPercentage );
-    saver.saveStep( a, -1, inputFileName );
+    saver.saveStep( a, -1, inputFileName.c_str() );
   }//try
   catch ( aol::Exception &el ) {
     el.dump();

@@ -181,15 +181,6 @@ public:
     _datafileTitleVector.push_back(Title);
     _datafilePlotStyleVector.push_back(PlotStyle);
   }
-  template <typename PositionDataType, typename ValueDataType>
-  void generateFunctionLogPlot ( const aol::Vector<PositionDataType> &FunctionPositions,
-                                 const aol::Vector<ValueDataType> &FunctionValues, const bool PlotAsBoxes = false,
-                                 const std::string Title = "",
-                                 const std::string PlotStyle = "" ) {
-    aol::Vector<ValueDataType> logFunctionValues;
-    toLogScale ( FunctionValues, logFunctionValues );
-    generateFunctionPlot ( FunctionPositions, logFunctionValues, PlotAsBoxes, Title, PlotStyle );
-  }
   void generateFunctionPlot ( const std::vector<std::pair<RealType, RealType> > &FunctionPositionsAndValues, const bool PlotAsBoxes = false,
                               const std::string Title = "", const std::string PlotStyle = "" ) {
     const int numPositions = static_cast<int> ( FunctionPositionsAndValues.size() );
@@ -200,17 +191,6 @@ public:
       functionValues[i] = FunctionPositionsAndValues[i].second;
     }
     generateFunctionPlot ( functionPositions, functionValues, PlotAsBoxes, Title, PlotStyle );
-  }
-  void generateFunctionLogPlot ( const std::vector<std::pair<RealType, RealType> > &FunctionPositionsAndValues, const bool PlotAsBoxes = false,
-                                 const std::string Title = "", const std::string PlotStyle = "" ) {
-    const int numPositions = FunctionPositionsAndValues.size();
-    aol::Vector<RealType> functionPositions ( numPositions ), functionValues ( numPositions ), logFunctionValues;
-    for ( int i = 0; i < numPositions; ++i ) {
-      functionPositions[i] = FunctionPositionsAndValues[i].first;
-      functionValues[i] = FunctionPositionsAndValues[i].second;
-    }
-    toLogScale ( functionValues, logFunctionValues );
-    generateFunctionPlot ( functionPositions, logFunctionValues, PlotAsBoxes, Title, PlotStyle );
   }
   template <typename InputDataType>
   void generateFunctionPlot ( const aol::Vector<InputDataType> &FunctionValues, const RealType A = 0, const RealType B = 1, const bool PlotAsBoxes = false,
@@ -227,13 +207,6 @@ public:
                               const std::string Title = "", const std::string PlotStyle = "" ) {
     for ( int i = 0; i < FunctionValues.numComponents(); ++i )
       generateFunctionPlot ( FunctionValues[i], A, B, PlotAsBoxes, Title, PlotStyle );
-  }
-  template <typename InputDataType>
-  void generateFunctionLogPlot ( const aol::Vector<InputDataType> &FunctionValues, const RealType A = 0, const RealType B = 1, const bool PlotAsBoxes = false,
-                                 const std::string Title = "", const std::string PlotStyle = "" ) {
-    aol::Vector<RealType> logFunctionValues;
-    toLogScale ( FunctionValues, logFunctionValues );
-    generateFunctionPlot(logFunctionValues, A, B, PlotAsBoxes, Title, PlotStyle );
   }
   /**
    * Plots Function and its derivative in the interval [A,B], discretized with
@@ -384,14 +357,6 @@ public:
   const std::vector<std::string> &getDataFilePlotStyles ( ) const {
     return _datafilePlotStyleVector;
   }
-protected:
-  void toLogScale ( const aol::Vector<RealType> &FunctionValues, aol::Vector<RealType> &LogFunctionValues ) {
-    LogFunctionValues.reallocate ( FunctionValues.size ( ) );
-    LogFunctionValues = FunctionValues;
-    for ( int k=0; k<LogFunctionValues.size ( ) ; ++k ) if ( LogFunctionValues[k] < 0 ) LogFunctionValues[k] = 0;
-    LogFunctionValues.addToAll ( 1 );
-    for ( int k=0; k<LogFunctionValues.size ( ) ; ++k ) LogFunctionValues[k] = log ( LogFunctionValues[k] );
-  }
 };
 
 //! Returns true if the system call to gnuplot returned EXIT_SUCCESS, false otherwise.
@@ -410,7 +375,7 @@ bool runGnuplot ( const char *GnuplotCommandFileName );
 template <typename RealType>
 class Plotter {
 protected:
-  char _noutput[1024], _plotfile[2100], _title[1024], _special[1024], _grid[1024], _size[1024], _xlabel[1024], _ylabel[1024], _xtics[1024], _ytics[1024], _border[1024], _plotcommand[1024], _outputDir[1024], _terminal[1024];
+  char _noutput[2048], _plotfile[3089], _title[1024], _special[1024], _grid[1024], _size[1024], _xlabel[1024], _ylabel[1024], _xtics[1024], _ytics[1024], _xlogscale[1024], _ylogscale[1024], _border[1024], _plotcommand[2108], _outputDir[1024], _terminal[1024];
   aol::Vec2<RealType> _canvasSize;
   RealType _lmargin, _tmargin, _rmargin, _bmargin;
   string _xRange, _yRange;
@@ -470,6 +435,8 @@ protected:
     _ylabel[0] = '\0';
     _xtics[0] = '\0';
     _ytics[0] = '\0';
+    _xlogscale[0] = '\0';
+    _ylogscale[0] = '\0';
     _border[0] = '\0';
     _lmargin = -1;
     _tmargin = -1;
@@ -499,6 +466,8 @@ private:
     ;
     gnuplotdat << _xtics;
     gnuplotdat << _ytics;
+    gnuplotdat << _xlogscale;
+    gnuplotdat << _ylogscale;
     gnuplotdat << _border;
     if ( _lmargin >= 0 ) gnuplotdat << aol::strprintf ( "set lmargin %g\n", _lmargin ).c_str ( );
     if ( _tmargin >= 0 ) gnuplotdat << aol::strprintf ( "set tmargin %g\n", _tmargin ).c_str ( );
@@ -687,6 +656,14 @@ public:
   void setTics ( const bool EnableTics = true ) {
     setXTics ( EnableTics );
     setYTics ( EnableTics );
+  }
+  void setXLogScale ( const bool EnableXLogScale = true ) {
+    if ( EnableXLogScale ) sprintf ( _xlogscale, "set logscale x\n" );
+    else _xlogscale[0] = '\0';
+  }
+  void setYLogScale ( const bool EnableYLogScale = true ) {
+    if ( EnableYLogScale ) sprintf ( _ylogscale, "set logscale y\n" );
+    else _ylogscale[0] = '\0';
   }
   void setBorder ( const bool EnableBorder = true ) {
     if ( EnableBorder ) _border[0] = '\0';

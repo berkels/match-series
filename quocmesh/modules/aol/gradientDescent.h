@@ -3,6 +3,7 @@
 
 #include <ArmijoSearch.h>
 #include <pointerClasses.h>
+#include <timestepSaver.h>
 #ifdef USE_CPP11
 #include <chrono>
 #endif
@@ -78,6 +79,7 @@ protected:
   unsigned int _postProcessingOffset;
   mutable double _timeOneStep;
   mutable int _countEvals;
+  const StepSaverBase<RealType, VectorType> *_pStepSaver;
 public:
   GradientDescentBase( const aol::Op<VectorType, aol::Scalar<RealType> > &E,
                        const aol::Op<VectorType, DerivativeType> &DE,
@@ -108,7 +110,8 @@ public:
     _timestepController(ARMIJO),
     _configurationFlags ( 0 ),
     _postProcessingOffset ( 1 ),
-    _countEvals ( 0 )
+    _countEvals ( 0 ),
+    _pStepSaver ( NULL )
   {
   }
   virtual ~GradientDescentBase()
@@ -312,7 +315,12 @@ public:
 
     // Also log the initial energy.
     writeEnergy( energyNew );
+    
+    // Save the current time step if _pStepSaver was initialized with setStepSaverReference
+    if ( _pStepSaver )
+      _pStepSaver->saveStep ( Dest, _iterations );
 
+    // This is the old method for saving time steps, which is kept here for compatibility reasons
     if (this->checkSaveConditions(_iterations))
       this->writeTimeStep( Dest, _iterations );     // virtual function to call the TimestepSaver
 
@@ -395,7 +403,12 @@ public:
       writeEnergy( energyNew );
       if ( !( _configurationFlags & DO_NOT_WRITE_CONSOLE_OUTPUT ) )
         writeConsoleOutput( energyNew, tau );
+      
+      // Save the current time step if _pStepSaver was initialized with setStepSaverReference
+      if ( _pStepSaver )
+        _pStepSaver->saveStep ( Dest, _iterations );
 
+      // This is the old method for saving time steps, which is kept here for compatibility reasons
       if (this->checkSaveConditions(_iterations))
         this->writeTimeStep( Dest, _iterations );     // virtual function to call the TimestepSaver
 
@@ -501,6 +514,9 @@ public:
   }
   RealType getEnergyAtLastPosition ( ) const {
     return _energyAtPosition;
+  }
+  void setStepSaverReference ( const StepSaverBase<RealType, VectorType>& StepSaver ) {
+    _pStepSaver = &StepSaver;
   }
 protected:
   void setUpdateFilterWidth( const bool UpdateFilterWidth ){

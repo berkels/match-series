@@ -6,6 +6,7 @@
 #include <vectorExtensions.h>
 #include <op.h>
 #include <NewtonInfo.h>
+#include <timestepSaver.h>
 
 #ifdef USE_CPP11
 #define AUTOPTR std::unique_ptr
@@ -1288,6 +1289,8 @@ protected:
   const int _reset;
   mutable BFGSOp<RealType, VectorType> _BFGSOp;
   bool _energyDecayBasedStopping;
+  const StepSaverBase<RealType, VectorType> *_pStepSaver;
+  
 
 public:
   QuasiNewtonBFGS ( const aol::Op<VectorType, aol::Scalar<RealType> > &E,
@@ -1301,7 +1304,8 @@ public:
     _identity ( ),
     _reset ( Reset ),
     _BFGSOp ( Reset ),
-    _energyDecayBasedStopping ( false ) {
+    _energyDecayBasedStopping ( false ),
+    _pStepSaver ( NULL ) {
     this->_pInfo->getSolverInfo().setQuietMode();
   }
 
@@ -1315,7 +1319,8 @@ public:
     _identity ( ),
     _reset ( Reset ),
     _BFGSOp ( Reset ),
-    _energyDecayBasedStopping ( false ) {
+    _energyDecayBasedStopping ( false ),
+    _pStepSaver ( NULL ) {
     this->_pInfo->getSolverInfo().setQuietMode();
   }
 
@@ -1350,6 +1355,10 @@ public:
 
     if ( _energyDecayBasedStopping && ( this->_pInfo->getTimestepController() != aol::NewtonInfo<RealType>::ARMIJO ) )
       throw aol::UnimplementedCodeException ( "Energy based stopping so far only works with the Armijo rule.", __FILE__, __LINE__ );
+
+    // Save the current time step if _pStepSaver was initialized with setStepSaverReference
+    if ( _pStepSaver )
+      _pStepSaver->saveStep ( Dest, this->_pInfo->getIterationCount ( ) );
 
     while ( FNorm > this->_pInfo->getAccuracy() && !(this->_pInfo->maxIterIsReached()) && tau > 0. ) {
       // Quasi-Newton-iteration given by x_{k+1} = x_k - tau_k B_k^{-1} f(x_k)
@@ -1420,7 +1429,12 @@ public:
       this->postProcess( Dest, this->_pInfo->getIterationCount() );
 
       this->_pInfo->finishStep(FNormNew, normUpdate, tau);
-      // output
+
+      // Save the current time step if _pStepSaver was initialized with setStepSaverReference
+      if ( _pStepSaver )
+        _pStepSaver->saveStep ( Dest, this->_pInfo->getIterationCount ( ) );
+
+      // output (this is the old method for saving time steps, which is kept here for compatibility reasons)
       if( this->checkSaveConditions( this->_pInfo->getIterationCount()) ){
         string fn;
         fn = aol::strprintf( "%s%s_newtonstep_%03d_%.5f", this->getSaveDirectory(), this->getSaveName(), this->_pInfo->getIterationCount(), FNormNew);
@@ -1447,6 +1461,10 @@ public:
 
   void setEnergyDecayBasedStopping ( const bool EnergyDecayBasedStopping ) {
     _energyDecayBasedStopping = EnergyDecayBasedStopping;
+  }
+
+  void setStepSaverReference ( const StepSaverBase<RealType, VectorType> &StepSaver ) {
+    _pStepSaver = &StepSaver;
   }
 };
 

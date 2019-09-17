@@ -820,7 +820,6 @@ typename ConfiguratorType::RealType findXShift ( const typename ConfiguratorType
   const aol::FEOpMixedDerivative<ConfiguratorType> stiffX ( Grid, 0, 0, aol::ONTHEFLY );
   const aol::FEOpMixedDerivative<ConfiguratorType> stiffY ( Grid, 1, 1, aol::ONTHEFLY );
 
-  /*
   if ( LaplaceWeight <= 0 ) {
     typename ConfiguratorType::MatrixType *pStiffMat = new typename ConfiguratorType::MatrixType ( Grid );
     stiffX.assembleAddMatrix ( *pStiffMat );
@@ -828,7 +827,6 @@ typename ConfiguratorType::RealType findXShift ( const typename ConfiguratorType
     pRegOp.reset ( pStiffMat, true );
   }
   else {
-   */
     aol::SparseMatrix<RealType> tempMat ( Grid );
     qc::assembleLaplaceSquareRegMatrix<ConfiguratorType> ( Grid, tempMat );
     tempMat *= LaplaceWeight;
@@ -838,7 +836,7 @@ typename ConfiguratorType::RealType findXShift ( const typename ConfiguratorType
     aol::CSR_Matrix<> regMat ( tempMat );
 
     pRegOp.reset ( new aol::CSR_Matrix<> ( tempMat ), true );
-//  }
+  }
 
   const aol::QuadraticFormOp<aol::Vector<RealType> > ERegStiff ( *pRegOp );
 
@@ -863,25 +861,6 @@ typename ConfiguratorType::RealType findXShift ( const typename ConfiguratorType
   const RealType scaleFac = static_cast<RealType> ( PhiX.getSize()[0] ) / PhiX.getSize().getMaxValue();
   // The 1D line integrals use h_x to interpret the deformation.
   PhiX /= scaleFac;
-  aol::Scalar<RealType> tmp;
-  EData.apply ( PhiX, tmp );
-  cerr << "EData = " << tmp << endl;
-  ERegStiff.apply ( PhiX, tmp );
-  cerr << "ERegStiff = " << tmp << endl;
-  const aol::QuadraticFormOp<aol::Vector<RealType> > ERegStiffX ( stiffX );
-  ERegStiffX.apply ( PhiX, tmp );
-  cerr << "ERegStiffX = " << tmp << endl;
-  const aol::QuadraticFormOp<aol::Vector<RealType> > ERegStiffY ( stiffY );
-  ERegStiffY.apply ( PhiX, tmp );
-  cerr << "ERegStiffY = " << tmp << endl;
-  aol::SparseMatrix<RealType> tempMat2 ( Grid );
-  qc::assembleLaplaceSquareRegMatrix<ConfiguratorType> ( Grid, tempMat2 );
-  tempMat2 *= LaplaceWeight;
-  const aol::QuadraticFormOp<aol::Vector<RealType> > ERegLap ( tempMat2 );
-  ERegLap.apply ( PhiX, tmp );
-  cerr << "ERegLap = " << tmp << endl;
-  cerr << "LaplaceWeight = " << LaplaceWeight << endl;
-
   gradientDescentSolver.applySingle ( PhiX );
   PhiX *= scaleFac;
   return gradientDescentSolver.getEnergyAtLastPosition();
