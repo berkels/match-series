@@ -6,6 +6,12 @@ This code implements the methods proposed in the following papers:
 
 [2] Benjamin Berkels and Christian H. Liebscher. Joint non-rigid image registration and reconstruction for quantitative atomic resolution scanning transmission electron microscopy. *Ultramicroscopy*, 198:49--57, March 2019. [[DOI](https://dx.doi.org/10.1016/j.ultramic.2018.12.016) | [arXiv](https://arxiv.org/abs/1901.01709)]
 
+[3] Sönke Reiche and Benjamin Berkels. Automated stacking of seismic reflection data based on non-rigid image matching. Geophysics, 83(3):V171--V183, May 2018. [[DOI](http://dx.doi.org/10.1190/geo2017-0189.1)]
+
+[4] Sönke Reiche, Benjamin Berkels, and Benedikt Weiß. Automated static and moveout corrections of high-resolution seismic data from the Baltic Sea. Near Surface Geophysics, 2019. in press. [[DOI](http://dx.doi.org/10.1002/nsg.12068)]
+
+`matchSeries` implements [1-2], `matchSeismicSeries` implements [3-4]. Note that the latter needs the options `USE_BLAS`, `USE_LAPACK` and `DUSE_SUITESPARSE` to be activated.
+
 It is based on the [QuocMesh software library](https://archive.ins.uni-bonn.de/numod.ins.uni-bonn.de/software/quocmesh/index.html), AG Rumpf, Institute for Numerical Simulation, University of Bonn, and distributed under the terms of the [Common Development and Distribution License](LICENSE.txt). Particularly, you can **download and use** this software **free of cost**.
 
 Some subdirectories contain code from other software projects, which is redistributed under the respective licenses:
