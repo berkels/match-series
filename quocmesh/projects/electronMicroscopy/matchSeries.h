@@ -694,7 +694,7 @@ public:
     }
 
     typedef aol::H1GradientDescent<ConfiguratorType, aol::MultiVector<RealType>, typename qc::MultilevelArrayTrait<RealType, typename ConfiguratorType::InitType>::LinSmoothType > GDType;
-    GDType solver ( _registrationAlgo.getInitializerRef(), E, DE, 1000, 1, 5e-7 );
+    GDType solver ( _registrationAlgo.getInitializerRef(), E, DE, _parser.getIntOrDefault ( "maxGDIterations", 1000 ), 1, _parser.getDoubleOrDefault ( "stopEpsilon", 5e-7 ) );
     solver.setConfigurationFlags ( GDType::USE_NONLINEAR_CG|GDType::LOG_GRADIENT_NORM_AT_OLD_POSITION|GDType::USE_GRADIENT_BASED_STOPPING );
 
     qc::MultiArray<RealType, Dim> phi ( _registrationAlgo.getInitializerRef() );
