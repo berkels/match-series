@@ -150,6 +150,27 @@ int main( int argc, char **argv ) {
           matchSeries<ConfType, RegisType>( parser, argc, argv );
         }
         break;
+      case 18:
+        {
+          typedef qc::RectangularGridConfigurator<RType, DimensionChoice, aol::Quadrature2D<RType,aol::SimpsonQuadrature<RType> > > NonDyadicHyperConfType;
+          typedef qc::QuocConfiguratorTraitMultiLin<RType, DimensionChoice, aol::Quadrature2D<RType,aol::SimpsonQuadrature<RType> > > HyperConfType;
+          typedef NonDyadicRegistrationMultilevelDescent<NonDyadicHyperConfType, qc::SSDRegistrationConfigurator, qc::HyperelasticEnergyConfigurator, HyperConfType,
+                                                         qc::StandardRegistrationMultilevelDescent<HyperConfType, qc::SSDRegistrationConfigurator<HyperConfType>, qc::HyperelasticEnergyConfigurator<HyperConfType> >,
+                                                         aol::H1GradientDescent<NonDyadicHyperConfType, aol::MultiVector<RType>, qc::CholeskyBasedInverseH1Metric<NonDyadicHyperConfType> >
+                                                        > RegisType;
+          matchSeries<HyperConfType, RegisType>( parser, argc, argv );
+        }
+      case 19:
+        {
+          typedef qc::RectangularGridConfigurator<RType, DimensionChoice, aol::Quadrature2D<RType,aol::SimpsonQuadrature<RType> > > NonDyadicHyperConfType;
+          typedef qc::QuocConfiguratorTraitMultiLin<RType, DimensionChoice, aol::GaussQuadrature<RType,DimensionChoice,3> > HyperConfType;
+          typedef NonDyadicRegistrationMultilevelDescent<NonDyadicHyperConfType, qc::SSDRegistrationConfigurator, qc::HyperelasticEnergyConfigurator, HyperConfType,
+                                                         qc::StandardRegistrationMultilevelDescent<HyperConfType, qc::SSDRegistrationConfigurator<HyperConfType>, qc::HyperelasticEnergyConfigurator<HyperConfType> >,
+                                                         aol::H1GradientDescent<NonDyadicHyperConfType, aol::MultiVector<RType>, qc::CholeskyBasedInverseH1Metric<NonDyadicHyperConfType> >
+                                                        > RegisType;
+          matchSeries<HyperConfType, RegisType>( parser, argc, argv );
+        }
+        break;
       default:
         throw aol::Exception ( "Unknown mode", __FILE__, __LINE__ );
     }
