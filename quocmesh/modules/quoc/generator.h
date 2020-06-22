@@ -811,7 +811,8 @@ public:
     qc::SmoothedImage<ConfType> smoothedData ( grid, temp, true, Sigma, KernelSize );
     smoothedData.getSmoothDXImRef ( ).copyBlockTo ( extendedData.getNumX() / 2, extendedData.getNumY() / 2, Gradient[0] );
     smoothedData.getSmoothDYImRef ( ).copyBlockTo ( extendedData.getNumX() / 2, extendedData.getNumY() / 2, Gradient[1] );
-    Gradient /=  grid.H();
+    const typename ConfType::InitType dataGrid ( qc::GridSize2d::createFrom ( Array ) );
+    Gradient /=  dataGrid.H();
   }
 
   //! \note straightforward, but not very efficient implementation

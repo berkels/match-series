@@ -64,6 +64,9 @@ qc::PNGLoadInterface::PNGLoadInterface ( const char *FileName, const bool QuietM
     cerr << FileName << " read.\n";
     cerr << "width = " << _width << ", height = " << _height << ", bit_depth = " << _bit_depth << ", channels = " << _channels << endl;
   }
+
+  if ( _bit_depth == 16 )
+    throw aol::UnimplementedCodeException ( "qc::PNGLoadInterface::PNGLoadInterface: Reading 16-bit per channel PNG data not implemented", __FILE__, __LINE__ );
 }
 
 template< typename DataType >
