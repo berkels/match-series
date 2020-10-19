@@ -1776,6 +1776,7 @@ void qc::netCDFgetDepthFirstDataAndGroups ( const char *fileName, std::vector<st
   aol::doNothingWithArgumentToPreventUnusedParameterWarning ( fileName );
   aol::doNothingWithArgumentToPreventUnusedParameterWarning ( groupNames );
   aol::doNothingWithArgumentToPreventUnusedParameterWarning ( dataName );
+  aol::doNothingWithArgumentToPreventUnusedParameterWarning ( dimension );
   throw aol::Exception ( "Handling NetCDF data requires the NetCDF library! Compile with -DUSE_NETCDF", __FILE__, __LINE__ );
 #endif
 }

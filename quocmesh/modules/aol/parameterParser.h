@@ -21,6 +21,10 @@ public:
     varStr = "";
   }
 
+  Variable( const Variable &Var ) {
+    varStr = Var.varStr;
+  }
+
   int type() const {
     return type ( getVarStr() );
   }

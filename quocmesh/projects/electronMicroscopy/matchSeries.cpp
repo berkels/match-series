@@ -160,6 +160,7 @@ int main( int argc, char **argv ) {
                                                         > RegisType;
           matchSeries<HyperConfType, RegisType>( parser, argc, argv );
         }
+        break;
       case 19:
         {
           typedef qc::RectangularGridConfigurator<RType, DimensionChoice, aol::Quadrature2D<RType,aol::SimpsonQuadrature<RType> > > NonDyadicHyperConfType;
@@ -169,6 +170,13 @@ int main( int argc, char **argv ) {
                                                          aol::H1GradientDescent<NonDyadicHyperConfType, aol::MultiVector<RType>, qc::CholeskyBasedInverseH1Metric<NonDyadicHyperConfType> >
                                                         > RegisType;
           matchSeries<HyperConfType, RegisType>( parser, argc, argv );
+        }
+        break;
+      case 20:
+        {
+          typedef qc::ParametricRigidBodyMotion2D<ConfType> ParametricDefType;
+          typedef qc::ParametricRegistrationMultilevelDescent<ConfType, ParametricDefType, qc::ParametricSSDEnergy<ConfType, ParametricDefType> > RegisType;
+          matchSeries<ConfType, RegisType>( parser, argc, argv );
         }
         break;
       default:

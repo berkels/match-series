@@ -288,6 +288,8 @@ public:
 public:
   Matrix ( const int Rows, const int Columns ) : MatrixAbstractBase<_DataType>( Rows, Columns ) { }
 
+  Matrix ( const Matrix<_DataType>& Other ) : MatrixAbstractBase<_DataType>( Other ) { }
+
   Matrix() : MatrixAbstractBase<_DataType>( 0, 0 ){ }
 
   virtual Matrix* clone ( CopyFlag ) const {
@@ -588,6 +590,10 @@ public:
   explicit PermutationMatrix ( const Vector<int> & rhs ) {
     reallocate ( rhs.size () );
     setPermutationVector ( rhs );
+  }
+
+  PermutationMatrix( const PermutationMatrix<ArgDataType>& Other ) : Matrix<ArgDataType> ( Other ) {
+    data = Other.data;
   }
 
   //! Resize Matrix, deleting old contents

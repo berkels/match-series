@@ -80,7 +80,7 @@ OPTION ( USE_OPENMP "" OFF )
 
 # First configure some compiler specific things.
 IF ( MSVC )
-  ADD_COMPILE_DEFINITIONS ( _UNICODE _CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS )
+  ADD_COMPILE_DEFINITIONS ( UNICODE _UNICODE _CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS )
   # Turn off the "conversion from 'A' to 'B', possible loss of data" warnings. Since our gcc configuration
   # doesn't show them, huge amounts of them have accumulated in the code and it would be a lot of work
   # (with little gain) to fix them

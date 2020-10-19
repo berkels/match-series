@@ -106,6 +106,11 @@ public:
 
     OldAllNodeIterator() : _size() {}
 
+    OldAllNodeIterator( const OldAllNodeIterator& Other ) {
+      _size = Other._size;
+      _cur = Other._cur;
+    }
+
     explicit OldAllNodeIterator ( const aol::Vec<3, int> &size ) : _size ( size )  { }
 
     qc::Element &getCurrentPosition() {
@@ -795,6 +800,11 @@ public:
     int _width;
 
     OldAllElementIterator( ) : _width ( -1 )  {}
+
+    OldAllElementIterator( const OldAllElementIterator& Other ) {
+      _width = Other._width;
+      _cur = Other._cur;
+    }
 
     OldAllElementIterator ( int Width ) {
       _width = Width - 1;

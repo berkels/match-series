@@ -126,6 +126,13 @@ public:
     return get ( pos[0], pos[1] );
   }
 
+  BitArray<qc::QC_2D>& operator= ( const BitArray<qc::QC_2D> &rhs ) {
+    aol::BitVector::operator = (rhs);
+    _numX = rhs._numX;
+    _numY = rhs._numY;
+    return *this;
+  }
+
   int getNumX() const {
     return( _numX );
   }

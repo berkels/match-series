@@ -58,6 +58,11 @@ public:
   IndexType operator [] (int i) const;
   IndexType & operator [] (int i);
 
+  GridSize<_Dim>& operator= ( const GridSize<_Dim> &Other ) {
+    CoordType::operator = (Other);
+    return *this;
+  }
+
   void quadraticOrDie () const;
   
   void setAll ( IndexType NumXYZ );

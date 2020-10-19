@@ -30,6 +30,10 @@ public:
     }
   };
 
+  Row ( ) { }
+
+  Row ( const Row<DataType>& ) { }
+
   virtual ~Row() {}
 
   virtual DataType get ( int I, int J ) const = 0;
@@ -191,7 +195,11 @@ public:
     }
   };
 
-  SparseRow() {}
+  SparseRow() : Row<DataType> () {}
+
+  SparseRow( const SparseRow<DataType>& Other ) : Row<DataType> ( Other ) {
+    row = Other.row;
+  }
 
   virtual ~SparseRow() {}
 

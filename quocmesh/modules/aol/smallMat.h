@@ -976,6 +976,12 @@ public:
     return this->_row[0][0] + this->_row[1][1];
   }
 
+  //! operator=
+  Matrix22<_DataType>& operator= ( const Matrix22<_DataType> &rhs ) {
+    Mat<2, 2, _DataType>::operator = (rhs);
+    return *this;
+  }
+
   using Mat<2, 2, _DataType>::operator*=;
 
   /**
@@ -1213,6 +1219,12 @@ public:
   //
   _DataType tr() const {
     return this->_row[0][0] + this->_row[1][1] + this->_row[2][2];
+  }
+
+  //! operator=
+  Matrix33<_DataType>& operator= ( const Matrix33<_DataType> &rhs ) {
+    Mat<3, 3, _DataType>::operator = (rhs);
+    return *this;
   }
 
   using Mat<3, 3, _DataType>::operator*=;

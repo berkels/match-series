@@ -116,6 +116,11 @@ public:
 
     OldAllElementIterator() : _size() {}
 
+    OldAllElementIterator( const OldAllElementIterator& Other ) {
+      _size = Other._size;
+      _cur = Other._cur;
+    }
+
     explicit OldAllElementIterator ( const aol::Vec<3, int> &size ) : _size ( size )  { }
 
     qc::Element &getCurrentPosition() {

@@ -192,6 +192,12 @@ public:
     return static_cast< ScalarArrayType& > ( * ( this->vecs[ i ].ptr ) );
   }
 
+  MultiArray <DataType, rangedim, imagedim >& operator= ( const MultiArray <DataType, rangedim, imagedim > &Other ) {
+    for ( int i = 0; i < imagedim; ++i )
+      comp ( i ) = Other.comp ( i );
+    return *this;
+  }
+
   MultiArray <DataType, rangedim, imagedim >& operator= ( const ScalarArrayType &Other ) {
     if( imagedim != 1 )
       throw aol::Exception( "Converting a ScalarArray to a MultiArray is only possible in case imagedim == 1!", __FILE__, __LINE__);

@@ -581,6 +581,12 @@ public:
     this->coords[1] = Y;
   }
 
+  //! operator=
+  Vec2<_DataType>& operator= ( const Vec2<_DataType> &rhs ) {
+    Vec<2, _DataType>::operator = (rhs);
+    return *this;
+  }
+
   //! multiplication by scalar (from the right)
   Vec2<_DataType> operator* ( _DataType alpha ) const {
     return ( Vec2<_DataType> ( alpha * this->coords[0], alpha * this->coords[1] ) );
@@ -735,6 +741,12 @@ public:
     this->coords[0] = p[0];
     this->coords[1] = p[1];
     this->coords[2] = p[2];
+  }
+
+  //! operator=
+  Vec3<_DataType>& operator= ( const Vec3<_DataType> &rhs ) {
+    Vec<3, _DataType>::operator = (rhs);
+    return *this;
   }
 
   //! operator= (for om::TriMesh<>::Point )

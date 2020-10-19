@@ -16,6 +16,11 @@ public:
     QUOC_ASSERT ( ( ( offset << 1 ) + 1 ) == size );
   }
 
+  Kernel2d ( const Kernel2d<RealType>& Other ) : aol::Vector<RealType>( Other ) {
+    size = Other.size;
+    offset = Other.offset;
+  }
+
   virtual ~Kernel2d() { }
 
   RealType getValue ( int OffX, int OffY ) const {
