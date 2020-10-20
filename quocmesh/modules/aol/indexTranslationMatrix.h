@@ -121,9 +121,9 @@ public:
   int getSizeSmall() const;
   int getSizeLarge() const;
 
-  const Vector<int> getSmallToLargePreimage() const;
-  const Vector<int> getSmallToLargeImage() const;
-  const Vector<int> getSmallToLarge () const;
+  const Vector<int>& getSmallToLargePreimage() const;
+  const Vector<int>& getSmallToLargeImage() const;
+  const Vector<int>& getSmallToLarge () const;
 
   ApplyModeOnUnusedNodes getApplyModeOnUnusedNodes() const;
   void setApplyModeOnUnusedNodes ( ApplyModeOnUnusedNodes mode );
@@ -468,7 +468,7 @@ getSizeLarge() const {
 //---------------------------------------------------------------------------
 
 template <typename MatrixType, typename LargeDomainType, typename LargeRangeType>
-const Vector<int> TransparentIndexTranslationMatrix<MatrixType, LargeDomainType, LargeRangeType>::
+const Vector<int>& TransparentIndexTranslationMatrix<MatrixType, LargeDomainType, LargeRangeType>::
 getSmallToLargePreimage() const {
   return _preimSmallToLarge;
 }
@@ -476,7 +476,7 @@ getSmallToLargePreimage() const {
 //---------------------------------------------------------------------------
 
 template <typename MatrixType, typename LargeDomainType, typename LargeRangeType>
-const Vector<int> TransparentIndexTranslationMatrix<MatrixType, LargeDomainType, LargeRangeType>::
+const Vector<int>& TransparentIndexTranslationMatrix<MatrixType, LargeDomainType, LargeRangeType>::
 getSmallToLargeImage() const {
   return _imSmallToLarge;
 }
@@ -484,7 +484,7 @@ getSmallToLargeImage() const {
 //---------------------------------------------------------------------------
 
 template <typename MatrixType, typename LargeDomainType, typename LargeRangeType>
-const Vector<int> TransparentIndexTranslationMatrix<MatrixType, LargeDomainType, LargeRangeType>::
+const Vector<int>& TransparentIndexTranslationMatrix<MatrixType, LargeDomainType, LargeRangeType>::
 getSmallToLarge () const {
   QUOC_ASSERT ( _translationIsSymmetric );
   return getSmallToLargeImage();
