@@ -1,5 +1,9 @@
 # Joint non-rigid registration and reconstruction of image series
 
+Joint non-rigid registration aims to calculate non-linear deformation artifacts from a series of images taken of an object. 
+The calculated deformation fields can be used to correct the original image series for these artifacts. 
+Applications include removal of scan noise in scanning transmission electron microscopy datasets.
+
 This code implements the methods proposed in the following papers:
 
 [1] Benjamin Berkels, Peter Binev, Douglas A. Blom, Wolfgang Dahmen, Robert C. Sharpley, and Thomas Vogt. Optimized imaging using non-rigid registration. *Ultramicroscopy*, 138:46--56, March 2014. [[DOI](https://dx.doi.org/10.1016/j.ultramic.2013.11.007) | [arXiv](https://arxiv.org/abs/1403.6774)]
@@ -28,14 +32,45 @@ Some subdirectories contain code from other software projects, which is redistri
 
   CMake module from [OpenFlipper](https://www.openflipper.org/), GNU Lesser General Public License
 
-We appreciate any feedback on your experience with our methods. In case you encounter any problems when using this software, please do not hesitate to contact us: <berkels@aices.rwth-aachen.de>
+We appreciate any feedback on your experience with our methods. We could also appreciate if you cite the above mentioned papers when you use the software in your work. In case you encounter any problems when using this software, please do not hesitate to contact us: <berkels@aices.rwth-aachen.de>
 
-## Prerequisites
+## Installation
+Binaries for matchSeries are available for Linux, Windows and Mac OSX through [conda](https://docs.conda.io/en/latest/) on the [conda-forge](https://anaconda.org/conda-forge/match-series) channel. Install with:
+
+```
+$ conda install -c conda-forge match-series
+```
+An experimental python wrapper meant for use in Jupyter notebooks is available on [pypi](https://pypi.org/project/pyMatchSeries/):
+```
+$ pip install --user pyMatchSeries
+```
+You may find [an example notebook](https://github.com/din14970/pyMatchSeries/blob/master/examples/example.ipynb) on the respective [Github repo](https://github.com/din14970/pyMatchSeries).
+
+## Using the software
+
+If you installed match-series with conda, `matchSeries` should be on the path. If you open up a terminal (Linux/OSX) or Anaconda prompt (Windows) you should be able to run:
+
+    $ matchSeries <path-to-parameter-file>
+
+If you do not provide a path to a parameter fill, `matchSeries` will give an error.
+
+If you compiled from source (see [below](#compiling)), the executable `matchSeries` is in the `projects/electronMicroscopy` subdirectory of the `quocGCC` directory.
+
+The program is controlled over the command line and a parameter file, there is no GUI.
+
+An example parameter file can be found at `examples/example_parameters.param`. An explanation of each parameter is provided in a comment string above each parameter. Be sure to set the `templateNamePattern` and `levels` (`precisionLevel`, `stopLevel`, `refineStopLevel`, `startLevel`, `refineStartLevel`) for each calculation. If you use the python wrapper, most of these will be filled out automatically.
+
+
+## <a name="compiling">Compiling</a>
+
+If you wish to compile the software yourself please follow the following instructions.
+
+### Prerequisites
 To build the software, cmake and a compiler like GCC or clang need to be installed. Furthermore, a few external libraries are needed. Under Linux, usually all of the dependencies can be installed with the package manager that comes with the Linux distribution. Under OS X/macOS, the installation of a third party package manager like [MacPorts](https://www.macports.org/) or [Homebrew](https://brew.sh/) is recommended. For instance, if MacPorts is installed, one can install cmake with:
 
     sudo port install cmake
 
-## Compiling
+### Procedure
 
 First create a clone of our git repository e.g. by
 
@@ -65,39 +100,3 @@ If all dependencies are installed correctly, this should work without any errors
 
 To speed up the compilation, one can have make use as many threads as desired, by calling `make -jN` (where `N` is the number of threads) instead of just `make`.
 
-## Running
-After the code is successfully compiled, there is an executable called `matchSeries` in the `projects/electronMicroscopy` subdirectory of the `quocGCC` directory.
-
-The program is controlled over the command line and a parameter file, there is no GUI.
-
-To start the program, change into the subdirectory with the executable and start the program with
-
-    ./matchSeries parameterfilename
-
-An example parameter file can be found at `quocmesh/projects/electronMicroscopy/matchSeries.par`. The first important parameter one needs to adjust in the parameter file is `templateNamePattern`. It specifies where the input images are located and assumes that all files have the same name except for a frame counter.
-
-For instance, a valid name pattern is
-
-    "/Volumes/Data/Cpp/input/StEM/ADF%04d.dm3"
-
-The frame counter is encoded in "printf" style, e.g. `%04d` means here is the counter, it has four digits and unused digits are filled with zeros. The actual values are configured with the parameters `templateNumOffset`, `templateNumStep` and `numTemplates`. For instance,
-
-    templateNumOffset 0
-    templateNumStep 1
-    numTemplates 20
-
-leads to the values 0000, 0001, 0002, ..., 0019.
-
-The second important set of parameters to set are the so-called levels, which specify the resolution of the input images and the parameters of the multilevel minimization. The multilevel algorithm expects the input images to be quadratic and to have a dyadic resolution, i.e. the number of pixels in one coordinate direction is a power of two. The exponent is called level. For instance, level 8 means that the input images have $2^8=256$ pixels in each direction. Thus, 9 and 10 encode 512 and 1024 pixels respectively.
-
-The parameter `precisionLevel` specifies the level used to store and output the data. For instance, if the input images are of size 512x512, precisionLevel has to be set to 9. There are numerous other levels that also need to be set properly. Usually, `stopLevel`, `refineStartLevel` and `refineStopLevel` can be chosen to be the same as `precisionLevel`. The last level you need to change is `startLevel`. This controls how coarse the multilevel hierarchy is stated. So, `startLevel` should be smaller than `stopLevel`/`precisionLevel`. Just small enough that you still see the individual atoms if the input images are downsampled to the `startLevel`. Usually `startLevel` is one or two smaller than `stopLevel`.
-
-To be more precise: In terms of Algorithm 1 of the Ultramicroscopy paper, we have $m_0=$ `startLevel` and $m_1=$ `stopLevel` in the first for loop of Algorithm 2, and $m_0=$ `refineStartLevel` and $m_1=$ `refineStopLevel` for the second for loop in Algorithm 2.
-
-Thus, a good starting guess for input images of size 512x512 would be
-
-    startLevel 7
-    stopLevel 9
-    precisionLevel 9
-    refineStartLevel 9
-    refineStopLevel 9
