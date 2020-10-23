@@ -12,7 +12,7 @@ templateNumOffset 0
 # The step between subsequent images. In the above example, if 2 then images are ADF0000, ADF0002, ADF0004, ADF0006, ...
 templateNumStep 1
 # Maximum number of images to consider.
-numTemplates 0
+numTemplates 2
 # List of images to skip. Enter as space separated indexes between the curly braces e.g. { 10 20 42 }, or use a list in the python wrapper.
 templateSkipNums {  }
 
@@ -63,9 +63,9 @@ startLevel 6
 refineStartLevel 7
 # In the refinement step stop at this level
 refineStopLevel 8
-# ?
+# Controls size of stripes in fine_checkview_**.png images which are meant to visualize the registration accuracy
 checkboxWidth 8
-# Resize the input images to the stop level, if different from precision level.
+# Resize also the input images to the precision level if 1
 resizeInput 0
 
 # In terms of Algorithm 1 of the Ultramicroscopy paper, we have $m_0=$ `startLevel` and $m_1=$ `stopLevel` in the first for loop of Algorithm 2, and $m_0=$ `refineStartLevel` and $m_1=$ `refineStopLevel` for the second for loop in Algorithm 2.
@@ -74,7 +74,7 @@ resizeInput 0
 # -------------
 # Number of times the entire calculation is performed
 numExtraStages 2
-# Adjustment of lambda in subsequent stages. Usually <1 because needed adjustments are minor
+# Adjustment of lambda in subsequent stages. Usually <1 because in the next stages the "reference" is smoother.
 extraStagesLambdaFactor 0.1
 # Use bilinear interpolation versus nearest neighbors when going to next step (level)
 resampleInsteadOfProlongateDeformation 1
@@ -94,10 +94,11 @@ reduceDeformations 1
 ##############
 # Folder where the output is saved
 saveDirectory " "
-# Only save the displacements
+# Calculate also the inverse transformations - from reference to the deformed images
 calcInverseDeformation 0
-# Options below mainly options for debugging and saving out more output beyond displacements
+# Only save the displacements
 onlySaveDisplacement 1
+# Options below mainly options for debugging and saving out more output beyond displacements
 saveNamedDeformedTemplates 0
 saveNamedDeformedTemplatesUsingNearestNeighborInterpolation 0
 saveNamedDeformedTemplatesExtendedWithMean 0

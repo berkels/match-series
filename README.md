@@ -1,7 +1,6 @@
 # Joint non-rigid registration and reconstruction of image series
 
-Joint non-rigid registration aims to calculate non-linear deformation artifacts from a series of images taken of an object. 
-The calculated deformation fields can be used to correct the original image series for these artifacts. 
+Joint non-rigid registration aims to calculate non-linear deformation artifacts from a series of images taken of an object and reconstruct the true image. 
 Applications include removal of scan noise in scanning transmission electron microscopy datasets.
 
 This code implements the methods proposed in the following papers:
