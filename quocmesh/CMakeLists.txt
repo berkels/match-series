@@ -84,7 +84,9 @@ IF ( MSVC )
   # Turn off the "conversion from 'A' to 'B', possible loss of data" warnings. Since our gcc configuration
   # doesn't show them, huge amounts of them have accumulated in the code and it would be a lot of work
   # (with little gain) to fix them
-  ADD_COMPILE_OPTIONS ( /wd4244 )
+  ADD_COMPILE_OPTIONS ( /wd4244 /wd4267 )
+  # We are using C++ exceptions.
+  SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc" )
   SET ( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:libcmt.lib" )
   SET ( CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} /NODEFAULTLIB:msvcrt.lib" )
 
@@ -1544,6 +1546,9 @@ FOREACH ( SELECTED_MODULE ${SELECTED_MODULES} )
   STRING ( REPLACE "/" "_" SELECTED_MODULE_DEFINE_NAME ${SELECTED_MODULE} )
   STRING ( TOUPPER ${SELECTED_MODULE_DEFINE_NAME} SELECTED_MODULE_DEFINE_NAME  )
   ADD_COMPILE_DEFINITIONS ( USE_${SELECTED_MODULE_DEFINE_NAME} )
+
+  # Add all header files of the selected module to the install target.
+  INSTALL ( FILES ${HDRS} DESTINATION include/quocmesh )
 
   IF ( GENERATE_INCLUDE_TEST )
     FOREACH ( HDR ${HDRS} )

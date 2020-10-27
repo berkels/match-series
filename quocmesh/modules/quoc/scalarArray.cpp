@@ -592,8 +592,8 @@ void qc::ScalarArray<_DataType, qc::QC_2D>::loadTIFF ( const char *fileName ) {
 #if defined ( USE_LIB_TIFF )
   TIFF* tif = TIFFOpen ( fileName, "r" );
   if ( tif ) {
-    uint32 width, height;
-    unsigned short bits, format, samplesPerPixel;
+    uint32 width = 0, height = 0;
+    uint16 bits = 0, format = 0, samplesPerPixel = 0;
     TIFFGetField ( tif, TIFFTAG_IMAGEWIDTH, &width );
     TIFFGetField ( tif, TIFFTAG_IMAGELENGTH, &height );
     TIFFGetField ( tif, TIFFTAG_BITSPERSAMPLE, &bits );

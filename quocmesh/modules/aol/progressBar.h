@@ -329,7 +329,7 @@ public:
     aol::ProgressBar<>::finish();
   }
   
-  const char* getTimeRemainingStr ( ) {
+  std::string getTimeRemainingStr ( ) {
     time_t nowTime;
     unsigned short nowMillisec;
     getWallClockTime( nowTime, nowMillisec );
@@ -355,7 +355,7 @@ public:
       if ( seconds < 10 ) ss << "0";
       ss << seconds;
     }
-    return ss.str ( ).c_str ( );
+    return ss.str ( );
   }
 };
 
