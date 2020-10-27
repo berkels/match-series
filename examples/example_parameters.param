@@ -1,0 +1,107 @@
+#############
+### Input ###
+#############
+# The path and naming pattern of the input image series.
+# For instance, a valid name pattern is "/Volumes/Data/Cpp/input/StEM/ADF%04d.dm3".
+# The frame counter is encoded in "printf" style, e.g. `%04d` means here is the counter, it has four digits and unused digits are filled with zeros, e.g. ADF0000, ADF0001, ADF0002, ...
+# When using the python wrapper this will be filled out automatically
+templateNamePattern " "
+# The first frame to start the calculation.
+# If 10, then in the above example the first frame would be ADF0010
+templateNumOffset 0
+# The step between subsequent images. In the above example, if 2 then images are ADF0000, ADF0002, ADF0004, ADF0006, ...
+templateNumStep 1
+# Maximum number of images to consider.
+numTemplates 2
+# List of images to skip. Enter as space separated indexes between the curly braces e.g. { 10 20 42 }, or use a list in the python wrapper.
+templateSkipNums {  }
+
+######################
+### Pre-processing ###
+######################
+# Smooth the images with a gaussian. If 0 then the images are not smoothed. Otherwise the sigma of the gaussian is determined by this parameter.
+preSmoothSigma 0
+# Map the intensity to the range 0-1 by default (0). If 1 then don't do that.
+dontNormalizeInputImages 0
+# Enhance contrast of the images mainly to cut off outliers.
+enhanceContrastSaturationPercentage 0.15
+# Minimum intensity in the image is mapped to 0
+normalizeMinToZero 1
+
+###################
+### Calculation ###
+###################
+# Rigid registration
+# ------------------
+# Pre-align images with rigid registration (translation) using cross-correlation
+useCorrelationToInitTranslation 0
+# The maximum translation in pixels of each image in this alignment. 0 = no limit on the translation
+maxCorrShift 0
+
+# Gradient descent settings
+# -------------------------
+# Maximum number of gradient descent steps
+maxGDIterations 500
+# Desired "precision" to be achieved during gradient descent
+stopEpsilon 1e-6
+# Regularization factor in the first stage, highest level
+lambda 200
+# Regularization factor update per level. For example, if you have images of level 8, then lambda will be applied in 8, lambda * lambdaFactor in 7, lambda * lambdaFactor^2 in 6...
+lambdaFactor 1
+
+# Levels
+# ------
+# Levels specify the resolution of the input images and the parameters of the multilevel minimization. The multilevel algorithm expects the input images to be quadratic and to have a dyadic resolution, i.e. the number of pixels in one coordinate direction is a power of two. The exponent is called level. For instance, level 8 means that the input images have $2^8=256$ pixels in each direction. Thus, 9 and 10 encode 512 and 1024 pixels respectively.
+# Most of these should be filled out by default if you use the python wrapper.
+# The precision of the input images = log_2(image sidelength) and the size of the output
+precisionLevel 8
+# The stopping level of the grid. i.e. deformations are not calculated beyond this resolution even if images have more pixels. If you want the resolution to equal the resolution of the images, stoplevel = precisionLevel. Higher levels take longer to compute.
+stopLevel 8
+# the starting level of the grid, i.e. the optimization will first be done on a grid of size 2^startLevel x 2^startlevel. startLevel should be small enough so that you still see the individual atoms if the input images are downsampled to this size. Usually startLevel is one or two smaller than stopLevel.
+startLevel 6
+# In the refinement step start at this level, usually >startLevel and <=stopLevel.
+refineStartLevel 7
+# In the refinement step stop at this level
+refineStopLevel 8
+# Controls size of stripes in fine_checkview_**.png images which are meant to visualize the registration accuracy
+checkboxWidth 8
+# Resize also the input images to the precision level if 1
+resizeInput 0
+
+# In terms of Algorithm 1 of the Ultramicroscopy paper, we have $m_0=$ `startLevel` and $m_1=$ `stopLevel` in the first for loop of Algorithm 2, and $m_0=$ `refineStartLevel` and $m_1=$ `refineStopLevel` for the second for loop in Algorithm 2.
+
+# Miscellaneous
+# -------------
+# Number of times the entire calculation is performed
+numExtraStages 2
+# Adjustment of lambda in subsequent stages. Usually <1 because in the next stages the "reference" is smoother.
+extraStagesLambdaFactor 0.1
+# Use bilinear interpolation versus nearest neighbors when going to next step (level)
+resampleInsteadOfProlongateDeformation 1
+# If 0 compare images sequentially, if 1 compare images always to the first frame
+dontAccumulateDeformation 0
+# Compare to the median image if true, else compare to the mean
+useMedianAsNewTarget 1
+# If you already calculated stage 1, skip it if True
+skipStage1 0
+# If you use the previous option, use the results from that step or not
+reuseStage1Results 1
+# Remove the bias from comparing to the first frame.
+reduceDeformations 1
+
+##############
+### Output ###
+##############
+# Folder where the output is saved
+saveDirectory " "
+# Calculate also the inverse transformations - from reference to the deformed images
+calcInverseDeformation 0
+# Only save the displacements
+onlySaveDisplacement 1
+# Options below mainly options for debugging and saving out more output beyond displacements
+saveNamedDeformedTemplates 0
+saveNamedDeformedTemplatesUsingNearestNeighborInterpolation 0
+saveNamedDeformedTemplatesExtendedWithMean 0
+saveDeformedTemplates 0
+saveNamedDeformedDMXTemplatesAsDMX 0
+saveRefAndTempl 0
