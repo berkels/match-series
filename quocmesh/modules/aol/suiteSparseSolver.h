@@ -359,7 +359,7 @@ private:
 // Only recent versions of SuiteSparse define SuiteSparse_long, but "long int" is not
 // what SuiteSparse is using as long data type on all platforms. If the types differ
 // we have to resort to SuiteSparse_long.
-#if defined(__MINGW32__)
+#if defined(__MINGW32__) || defined(_MSC_VER)
   typedef SuiteSparse_long SuiteSparseIntType;
 #else
   typedef long int SuiteSparseIntType;

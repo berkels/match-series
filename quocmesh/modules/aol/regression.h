@@ -778,8 +778,13 @@ public:
       sol ( NumCols.sum() ),
       f ( rhs.data(), NumRows, aol::FLAT_COPY ),
       direction ( sol.data(), NumCols, aol::FLAT_COPY )
-#endif
   { }
+#else
+  {
+    aol::doNothingWithArgumentToPreventUnusedParameterWarning ( NumRows );
+    aol::doNothingWithArgumentToPreventUnusedParameterWarning ( NumCols );
+  }
+#endif
 
   aol::MultiVector<RealType> &getFReference ( ) {
     return f;

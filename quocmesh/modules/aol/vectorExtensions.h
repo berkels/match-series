@@ -279,6 +279,11 @@ public:
       (*this)[i].setAll ( value );
   }
 
+  VectorContainer<DataType> & operator= ( const VectorContainer<DataType> &other ) {
+    RandomAccessContainer<DataType>::operator = (other);
+    return *this;
+  }
+
   VectorContainer<DataType> &  operator+=(  const VectorContainer<DataType>& other ){
     return addMultiple( other, aol::ZOTrait<RealType>::one );
   }
