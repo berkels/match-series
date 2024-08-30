@@ -90,14 +90,14 @@ public:
   }
   void setSaveName ( const char *saveName, const int outerSteps = -1 ) {
     if ( outerSteps != -1 )
-      sprintf ( _saveNameTrunc, "%s_%02d", saveName, outerSteps );
+      snprintf ( _saveNameTrunc, 1024, "%s_%02d", saveName, outerSteps );
     else {
       strncpy ( _saveNameTrunc, saveName, 1023 );
       _saveNameTrunc[1023] = 0;
     }
   }
   void setSaveName ( const char *saveName, const char *saveDir, const int outerSteps ) {
-    sprintf ( _saveNameTrunc, "%s_%02d", saveName, outerSteps );
+    snprintf ( _saveNameTrunc, 1024, "%s_%02d", saveName, outerSteps );
     strncpy ( _saveDirectory, saveDir, 1023 );
   }
   const char* getSaveName () const                                {
@@ -666,17 +666,16 @@ public:
       }
 
       else if ( grid.getDimOfWorld() == qc::QC_3D ) {
-        char time_and_suffix[1024];
         qc::Array<RealType> vectorfield_0 ( vectorfield[0], grid );
         qc::Array<RealType> vectorfield_1 ( vectorfield[1], grid );
         qc::Array<RealType> vectorfieldX2d ( grid.getNumX(), grid.getNumY() );
         qc::Array<RealType> vectorfieldY2d ( grid.getNumX(), grid.getNumY() );
 
         for( int i = 0; i < grid.getNumZ(); i++ ){
-          sprintf( time_and_suffix, "_%03d.png", i );
+          std::string time_and_suffix = aol::strprintf ( "_%03d.png", i );
           cerr << endl << time_and_suffix <<endl;
           string filename;
-          initSaveNameStringAndSendMessageToConsole ( outerStep, step, time_and_suffix, filename );
+          initSaveNameStringAndSendMessageToConsole ( outerStep, step, time_and_suffix.c_str(), filename );
           vectorfield_0.getSlice ( qc::QC_Z, i, vectorfieldX2d );
           vectorfield_1.getSlice ( qc::QC_Z, i, vectorfieldY2d );
           qc::writeColorField<RealType>( vectorfieldX2d, vectorfieldY2d, filename, -1. );

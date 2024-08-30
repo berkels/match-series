@@ -615,7 +615,7 @@ FILE* ipfstream::openFile ( const char *FileName ) {
     throw Exception ( "Reading bz2 compressed files without using bzlib under windows is impossible", __FILE__, __LINE__ );
 #endif // USE_LIB_BZ2
 #else
-    sprintf ( fullCommand, "bunzip2 -c %s 2>/dev/null", FileName );
+    snprintf ( fullCommand, 4096, "bunzip2 -c %s 2>/dev/null", FileName );
     f = popen ( fullCommand, "r" );
     isPipe = true;
 #endif // _WIN32
@@ -623,7 +623,7 @@ FILE* ipfstream::openFile ( const char *FileName ) {
 #ifdef _WIN32
     throw Exception ( "Reading gz compressed files under windows is not implemented", __FILE__, __LINE__ );
 #else
-    sprintf ( fullCommand, "gunzip -c %s 2>/dev/null", FileName );
+    snprintf ( fullCommand, 4096, "gunzip -c %s 2>/dev/null", FileName );
     f = popen ( fullCommand, "r" );
     isPipe = true;
 #endif // _WIN32

@@ -359,9 +359,8 @@ public:
     const bool isIn = ( i >= 0 && i < _m &&
                         j >= 0 && j < _n );
     if ( !isIn ) {
-      char errmsg[1024];
-      sprintf( errmsg, "%s %d %d (upper bounds: %d %d)", msg, i, j, _m, _n );
-      throw aol::OutOfBoundsException ( errmsg, fi, li );
+      std::string errmsg = aol::strprintf ( "%s %d %d (upper bounds: %d %d)", msg, i, j, _m, _n );
+      throw aol::OutOfBoundsException ( errmsg.c_str(), fi, li );
     }
     return ( isIn );
   }

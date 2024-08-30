@@ -1069,12 +1069,13 @@ public:
 /**
  * \author Berkels
  */
-template <typename ConfiguratorType, typename RegistrationConfiguratorType, typename _RegularizationConfiguratorType = DirichletRegularizationConfigurator<ConfiguratorType>, typename GradientDescentType = aol::H1GradientDescent<ConfiguratorType, aol::MultiVector<typename ConfiguratorType::RealType>, typename qc::MultilevelArrayTrait<typename ConfiguratorType::RealType, typename ConfiguratorType::InitType>::LinSmoothType > >
+template <typename ConfiguratorType, typename RegistrationConfiguratorType, typename _RegularizationConfiguratorType = DirichletRegularizationConfigurator<ConfiguratorType>, typename _GradientDescentType = aol::H1GradientDescent<ConfiguratorType, aol::MultiVector<typename ConfiguratorType::RealType>, typename qc::MultilevelArrayTrait<typename ConfiguratorType::RealType, typename ConfiguratorType::InitType>::LinSmoothType > >
 class StandardRegistrationMultilevelDescent : public qc::RegistrationMultilevelDescentInterface<ConfiguratorType, typename RegistrationConfiguratorType::ImageDOFType> {
 public:
   typedef typename ConfiguratorType::RealType RealType;
   typedef typename ConfiguratorType::ArrayType ArrayType;
   typedef _RegularizationConfiguratorType RegularizationConfiguratorType;
+  typedef _GradientDescentType GradientDescentType;
   typedef typename RegistrationConfiguratorType::ImageDOFType ImageDOFType;
   static const bool IsParametric = false;
 

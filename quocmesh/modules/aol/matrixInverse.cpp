@@ -88,11 +88,10 @@ template <class DataType>
 void LUInverse<DataType>::saveToFiles ( const char* const FileNameMask ) const {
   const aol::Vector<DataType> &decompVec = this->getDecompositionMatrixRef().getDataVectorReference();
   const aol::Vector<int> &permutVec = this->getPermutationMatrixRef().getPermutationVectorRef();
-  char filename[1024];
-  sprintf ( filename, FileNameMask, "decomp" );
-  decompVec.saveToFile ( filename );
-  sprintf ( filename, FileNameMask, "permut" );
-  permutVec.saveToFile ( filename );
+  std::string filename = aol::strprintf ( FileNameMask, "decomp" );
+  decompVec.saveToFile ( filename.c_str() );
+  filename = aol::strprintf ( FileNameMask, "permut" );
+  permutVec.saveToFile ( filename.c_str() );
 }
 
 
@@ -101,11 +100,10 @@ void LUInverse<DataType>::loadFromFiles ( const char* const FileNameMask ) {
   aol::Vector<DataType> decompVec;
   aol::Vector<int> permutVec;
 
-  char filename[1024];
-  sprintf ( filename, FileNameMask, "decomp" );
-  decompVec.loadFromFile ( filename );
-  sprintf ( filename, FileNameMask, "permut" );
-  permutVec.loadFromFile ( filename );
+  std::string filename = aol::strprintf ( FileNameMask, "decomp" );
+  decompVec.loadFromFile ( filename.c_str() );
+  filename = aol::strprintf ( FileNameMask, "permut" );
+  permutVec.loadFromFile ( filename.c_str() );
 
   const int n = permutVec.size();
 

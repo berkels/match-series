@@ -40,9 +40,8 @@ public:
       aol::Vector<DataType> ( Vec, copyFlag ),
     numX ( Grid.getNumX() ), numY ( Grid.getNumY() ), numZ ( Grid.getNumZ() ) {
     if ( static_cast<int> ( Vec.size() ) != numX*numY*numZ ) {
-      char error[1024];
-      sprintf ( error, "Array::Array( const aol::Vector<DataType> &, const GridType & ): Vectorlength = %d should be equal to size of array, which is %d", Vec.size(), numX*numY*numZ );
-      throw ( aol::Exception ( error, __FILE__, __LINE__ ) );
+      std::string error = aol::strprintf ( "Array::Array( const aol::Vector<DataType> &, const GridType & ): Vectorlength = %d should be equal to size of array, which is %d", Vec.size(), numX*numY*numZ );
+      throw ( aol::Exception ( error.c_str(), __FILE__, __LINE__ ) );
     }
     init ();
   }
@@ -51,9 +50,8 @@ public:
   aol::Vector<DataType> ( Vec, copyFlag ),
   numX ( NumX ), numY ( NumY ), numZ ( NumZ ) {
     if ( static_cast<int> ( Vec.size() ) != numX*numY*numZ ) {
-      char error[1024];
-      sprintf ( error, "Array::Array( const aol::Vector<DataType> &, int, int, int ): Vectorlength = %d should be equal to size of array, which is %d", Vec.size(), numX*numY*numZ );
-      throw ( aol::Exception ( error, __FILE__, __LINE__ ) );
+      std::string error = aol::strprintf ( "Array::Array( const aol::Vector<DataType> &, int, int, int ): Vectorlength = %d should be equal to size of array, which is %d", Vec.size(), numX*numY*numZ );
+      throw ( aol::Exception ( error.c_str(), __FILE__, __LINE__ ) );
     }
     init ();
   }
@@ -343,9 +341,8 @@ protected:
                         j >= 0 && j < numY &&
                         k >= 0 && k < numZ );
     if ( !isIn ) {
-      char errmsg[1024];
-      sprintf( errmsg, "%s %d %d %d (upper bounds: %d %d %d)", msg, i, j, k, numX, numY, numZ );
-      throw aol::OutOfBoundsException ( errmsg, fi, li );
+      std::string errmsg = aol::strprintf ( "%s %d %d %d (upper bounds: %d %d %d)", msg, i, j, k, numX, numY, numZ );
+      throw aol::OutOfBoundsException ( errmsg.c_str(), fi, li );
     }
     return ( isIn );
   }

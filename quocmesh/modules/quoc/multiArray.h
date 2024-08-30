@@ -286,9 +286,8 @@ public:
     }
 
     for ( int i = 0; i < imagedim; ++i ) {
-      char fileName[1024];
-      sprintf ( fileName, fileNameMask, i );
-      comp ( i ).load ( fileName );
+      std::string fileName = aol::strprintf ( fileNameMask, i );
+      comp ( i ).load ( fileName.c_str() );
     }
   }
 
@@ -301,27 +300,24 @@ public:
   //! Call save for each component, generating file names from suitable mask
   void save ( const char *fileNameMask, const SaveType type, const char* comment = NULL ) const {
     for ( int i = 0; i < imagedim; ++i ) {
-      char fileName[1024];
-      sprintf ( fileName, fileNameMask, i );
-      comp ( i ).save ( fileName, type, comment );
+      std::string fileName = aol::strprintf ( fileNameMask, i );
+      comp ( i ).save ( fileName.c_str(), type, comment );
     }
   }
 
   //! Call saveRaw for each component, generating file names from suitable mask using one clipping value
   void saveRaw ( const char *fileNameMask, const SaveType type, const DataType Minimum, const DataType Maximum ) {
     for ( int i = 0; i < imagedim; ++i ) {
-      char fileName[1024];
-      sprintf ( fileName, fileNameMask, i );
-      comp ( i ).saveRaw ( fileName , type, Minimum, Maximum );
+      std::string fileName = aol::strprintf ( fileNameMask, i );
+      comp ( i ).saveRaw ( fileName.c_str() , type, Minimum, Maximum );
     }
   }
 
   //! Call saveRaw for each component, generating file names from suitable mask using multiple clipping values
   void saveRaw ( const char *fileNameMask, const SaveType type, const DataVecType &Minima, const DataVecType &Maxima ) {
     for ( int i = 0; i < imagedim; ++i ) {
-      char fileName[1024];
-      sprintf ( fileName, fileNameMask, i );
-      comp ( i ).saveRaw ( fileName , type, Minima[i], Maxima[i] );
+      std::string fileName = aol::strprintf ( fileNameMask, i );
+      comp ( i ).saveRaw ( fileName.c_str() , type, Minima[i], Maxima[i] );
     }
   }
 

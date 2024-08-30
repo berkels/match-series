@@ -95,7 +95,7 @@ ELSE( WIN32 )
 
     FIND_PATH ( SUITESPARSE_LIBRARY_DIR
                 NAMES libcholmod.so libcholmod.a
-                PATH_SUFFIXES lib )
+                PATH_SUFFIXES lib lib64 )
 
 ENDIF(APPLE)
 

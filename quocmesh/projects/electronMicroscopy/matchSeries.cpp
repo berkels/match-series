@@ -91,6 +91,7 @@ int main( int argc, char **argv ) {
         }
         break;
 
+      /*
       case 11:
         {
           typedef qc::RectangularGridConfigurator<RType, qc::QC_1D, aol::GaussQuadrature<RType, qc::QC_1D, 3> > ConfType1D;
@@ -98,6 +99,7 @@ int main( int argc, char **argv ) {
           matchSeries<ConfType, RegisType>( parser, argc, argv );
         }
         break;
+      */
 
       case 12:
         {
@@ -176,6 +178,22 @@ int main( int argc, char **argv ) {
         {
           typedef qc::ParametricRigidBodyMotion2D<ConfType> ParametricDefType;
           typedef qc::ParametricRegistrationMultilevelDescent<ConfType, ParametricDefType, qc::ParametricSSDEnergy<ConfType, ParametricDefType> > RegisType;
+          matchSeries<ConfType, RegisType>( parser, argc, argv );
+        }
+        break;
+      case 21:
+        {
+          typedef qc::RectangularGridConfigurator<RType, DimensionChoice, aol::GaussQuadrature<RType,DimensionChoice,3> > NonDyadicConfType;
+          typedef NonDyadicRegistrationMultilevelDescent<NonDyadicConfType, qc::NCCRegistrationConfigurator, qc::LaplaceConfigurator, ConfType,
+                                                         qc::StandardRegistrationMultilevelDescent<ConfType, qc::NCCRegistrationConfigurator<ConfType>, qc::LaplaceConfigurator<ConfType> >,
+                                                         aol::H1GradientDescent<NonDyadicConfType, aol::MultiVector<RType>, qc::CholeskyBasedInverseH1Metric<NonDyadicConfType> >
+                                                         > RegisType;
+          matchSeries<ConfType, RegisType>( parser, argc, argv );
+        }
+        break;
+      case 22:
+        {
+          typedef qc::StandardRegistrationMultilevelDescent<ConfType, qc::SSDRegistrationConfigurator<ConfType> > RegisType;
           matchSeries<ConfType, RegisType>( parser, argc, argv );
         }
         break;

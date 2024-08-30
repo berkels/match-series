@@ -95,7 +95,10 @@ using  namespace __gnu_cxx;
 #define _SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS 1
 #endif
 
+// Visual Studio 2015 introduced support for snprintf.
+#if ( _MSC_VER < 1900 )
 #define snprintf _snprintf
+#endif
 #define strcasecmp _stricmp
 
 #include <float.h>

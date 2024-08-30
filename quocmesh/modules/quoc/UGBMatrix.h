@@ -334,9 +334,8 @@ public:
     // No good index has been found
 
 #ifdef BOUNDS_CHECK
-    char message[1024];
-    sprintf ( message, "UGBMatrix: Cannot add at row %d, col %d -> bandIndex %d", row, col, rowIndex );
-    throw aol::Exception ( message, __FILE__, __LINE__ );
+    std::string message = aol::strprintf ( "UGBMatrix: Cannot add at row %d, col %d -> bandIndex %d", row, col, rowIndex );
+    throw aol::Exception ( message.c_str(), __FILE__, __LINE__ );
 #endif
   }
 
@@ -399,9 +398,8 @@ public:
 
 #ifdef BOUNDS_CHECK
     // No good index has been found
-    char message[1024];
-    sprintf ( message, "UGBMatrix: Cannot add at row %d, col %d -> bandIndex %d", row, col, rowIndex );
-    throw aol::Exception ( message, __FILE__, __LINE__ );
+    std::string message = aol::strprintf ( "UGBMatrix: Cannot add at row %d, col %d -> bandIndex %d", row, col, rowIndex );
+    throw aol::Exception ( message.c_str(), __FILE__, __LINE__ );
 #endif
   }
 

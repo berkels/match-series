@@ -112,9 +112,8 @@ protected:
 #ifdef BOUNDS_CHECK
   inline void boundsCheck ( const int x, const int y, const char* msg, const char* fi, const int li ) const {
     if ( x < 0 || x >= _Nx || y < 0 || y >= _Ny ) {
-      char errmsg[1024];
-      sprintf( errmsg, msg, x, y, _Nx, _Ny );
-      throw aol::Exception ( errmsg, fi, li );
+      std::string errmsg = aol::strprintf ( msg, x, y, _Nx, _Ny );
+      throw aol::Exception ( errmsg.c_str(), fi, li );
     }
   }
 #endif
@@ -234,9 +233,8 @@ protected:
 #ifdef BOUNDS_CHECK
   inline void boundsCheck ( const int x, const int y, const int z, const char* msg, const char* fi, const int li ) const {
     if ( x < 0 || x >= _Nx || y < 0 || y >= _Ny || z < 0 || z >= _Nz ) {
-      char errmsg[1024];
-      sprintf( errmsg, msg, x, y, z, _Nx, _Ny, _Nz );
-      throw aol::Exception ( errmsg, fi, li );
+      std::string errmsg = aol::strprintf ( msg, x, y, z, _Nx, _Ny, _Nz );
+      throw aol::Exception ( errmsg.c_str(), fi, li );
     }
   }
 #endif
@@ -351,9 +349,8 @@ protected:
 #ifdef BOUNDS_CHECK
   inline void boundsCheck ( const int x, const char* msg, const char* fi, const int li ) const {
     if ( x < 0 || x >= _Nx ) {
-      char errmsg[1024];
-      sprintf( errmsg, msg, x, _Nx);
-      throw aol::Exception ( errmsg, fi, li );
+      std::string errmsg = aol::strprintf ( msg, x, _Nx);
+      throw aol::Exception ( errmsg.c_str(), fi, li );
     }
   }
 #endif
@@ -484,9 +481,8 @@ protected:
 #ifdef BOUNDS_CHECK
   inline void boundsCheck ( const int x, const int y, const char* msg, const char* fi, const int li ) const {
     if ( x < 0 || x >= _Nx || y < 0 || y >= _Ny || y >= static_cast<int>( _YLookup.size() ) ) {
-      char errmsg[1024];
-      sprintf( errmsg, msg, x, y, _Nx, _Ny, _YLookup.size() );
-      throw aol::Exception ( errmsg, fi, li );
+      std::string errmsg = aol::strprintf ( msg, x, y, _Nx, _Ny, _YLookup.size() );
+      throw aol::Exception ( errmsg.c_str(), fi, li );
     }
   }
 #endif
@@ -626,9 +622,8 @@ protected:
 #ifdef BOUNDS_CHECK
   inline void boundsCheck ( const int x, const int y, const int z, const char* msg, const char* fi, const int li ) const {
     if ( x < 0 || x >= _Nx || y < 0 || y >= _Ny || y >= static_cast<int>( _YLookup.size() ) || z < 0 || z >= _Nz || z >= static_cast<int>( _ZLookup.size() ) ) {
-      char errmsg[1024];
-      sprintf( errmsg, msg, x, y, z, _Nx, _Ny, _Nz, _YLookup.size(), _ZLookup.size() );
-      throw aol::Exception ( errmsg, fi, li );
+      std::string errmsg = aol::strprintf ( msg, x, y, z, _Nx, _Ny, _Nz, _YLookup.size(), _ZLookup.size() );
+      throw aol::Exception ( errmsg.c_str(), fi, li );
     }
   }
 #endif

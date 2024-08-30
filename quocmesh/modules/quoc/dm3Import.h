@@ -138,7 +138,7 @@ public:
 
     // get length of file:
     _in.seekg ( 0, _in.end );
-    const int length = _in.tellg();
+    const size_t length = _in.tellg();
     _in.seekg ( 0, _in.beg );
     const string outFileName = ( OutBaseName + ( ( _version == 3 ) ? ".dm3" : ".dm4" ) );
     std::ofstream out ( outFileName.c_str(), ios::binary );
@@ -155,7 +155,7 @@ public:
       writeValue ( out, getDataEntry().dataType, paddedArray[i] );
 
     _in.seekg ( out.tellp(), _in.beg );
-    for ( int i = out.tellp(); i < length; ++i )
+    for ( size_t i = out.tellp(); i < length; ++i )
       out.put ( _in.get() );
   }
   
@@ -165,7 +165,7 @@ public:
     
     // get length of file:
     _in.seekg ( 0, _in.end );
-    const int length = _in.tellg();
+    const size_t length = _in.tellg();
     _in.seekg ( 0, _in.beg );
     const string outFileName = ( OutBaseName + ( ( _version == 3 ) ? ".dm3" : ".dm4" ) );
     std::ofstream out ( outFileName.c_str(), ios::binary );
@@ -182,7 +182,7 @@ public:
       writeValue ( out, getDataEntry().dataType, paddedArray[i] );
     
     _in.seekg ( out.tellp(), _in.beg );
-    for ( int i = out.tellp(); i < length; ++i )
+    for ( size_t i = out.tellp(); i < length; ++i )
       out.put ( _in.get() );
   }
 protected:

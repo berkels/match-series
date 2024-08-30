@@ -514,8 +514,13 @@ public:
       this->get ( xL, yU ), this->get ( xU, yU )
     };
 
-    return static_cast<RealType> ( ( 1 - X ) * ( 1 - Y ) * v[0] + X * ( 1 - Y ) * v[1] +
-                                   ( 1 - X ) *   Y * v[2] + X *   Y * v[3] );
+    // Special handling to prevent NaNs and Infs from "creeping".
+    // For now, this only handles one of the four boundary cases.
+    if ( Y == 0 )
+      return static_cast<RealType> ( ( 1 - X ) * v[0] + X * v[1] );
+    else
+      return static_cast<RealType> ( ( 1 - X ) * ( 1 - Y ) * v[0] + X * ( 1 - Y ) * v[1] +
+                                     ( 1 - X ) *   Y * v[2] + X *   Y * v[3] );
   }
 
   /** Returns an interpolated value at position x, y (world coordinates) where the array is assumed to discretize [0,1]^2
@@ -1785,9 +1790,8 @@ public:
     Array<DataType> ( Vector, NumX, NumY, NumZ, copyFlag ) { // default: flat copy
 
     if ( Vector.size() != this->getNumX() *this->getNumY() *this->getNumZ() ) {
-      char error[1024];
-      sprintf ( error, "qc::ScalarArray<QC_3D>::ScalarArray( const aol::Vector<DataType> &, int, int, int ): Vectorlength = %d should be equal to size of array, which is %d", Vector.size(), this->getNumX() *this->getNumY() *this->getNumZ() );
-      throw ( aol::Exception ( error, __FILE__, __LINE__ ) );
+      std::string error = aol::strprintf ( "qc::ScalarArray<QC_3D>::ScalarArray( const aol::Vector<DataType> &, int, int, int ): Vectorlength = %d should be equal to size of array, which is %d", Vector.size(), this->getNumX() *this->getNumY() *this->getNumZ() );
+      throw ( aol::Exception ( error.c_str(), __FILE__, __LINE__ ) );
     }
     init();
   }
@@ -1797,9 +1801,8 @@ public:
     Array<DataType> ( Vector, Grid.getNumX(), Grid.getNumY(), Grid.getNumZ(), copyFlag ) { // default: flat copy
 
     if ( Vector.size() != this->getNumX() *this->getNumY() *this->getNumZ() ) {
-      char error[1024];
-      sprintf ( error, "qc::ScalarArray<QC_3D>::ScalarArray( const aol::Vector<DataType> &, const GridType ): Vectorlength = %d should be equal to size of array, which is %d", Vector.size(), this->getNumX() *this->getNumY() *this->getNumZ() );
-      throw ( aol::Exception ( error, __FILE__, __LINE__ ) );
+      std::string error = aol::strprintf ( "qc::ScalarArray<QC_3D>::ScalarArray( const aol::Vector<DataType> &, const GridType ): Vectorlength = %d should be equal to size of array, which is %d", Vector.size(), this->getNumX() *this->getNumY() *this->getNumZ() );
+      throw ( aol::Exception ( error.c_str(), __FILE__, __LINE__ ) );
     }
     init();
   }

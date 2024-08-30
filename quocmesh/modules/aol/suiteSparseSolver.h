@@ -11,6 +11,13 @@
 #include <umfpack.h>
 #include <SuiteSparseQR.hpp>
 
+// Newer versions of SuiteSparse removed the member dtype from cholmod_common.
+#if defined(CHOLMOD_MAIN_VERSION) and (CHOLMOD_MAIN_VERSION >=5) and (CHOLMOD_SUB_VERSION >=2)
+#define SET_CHOLMOD_DTYPE 0
+#else
+#define SET_CHOLMOD_DTYPE 1
+#endif
+
 namespace aol {
 
 /**
@@ -96,10 +103,12 @@ public:
     _maxNumEntriesPerBlockRow( MaxNumEntriesPerBlockRow ),
     _matrixPositiveDefinite ( false ) {
     cholmod_start ( &_settings );
+#if SET_CHOLMOD_DTYPE
     if ( aol::RealTrait<RealType>::ALIAS == aol::FLOAT )
       _settings.dtype = CHOLMOD_DOUBLE; // CHOLMOD_SINGLE not yet supported
     else
       _settings.dtype = CHOLMOD_DOUBLE;
+#endif
   }
 
   virtual ~CholeskyBlockInverseOp() {
@@ -359,7 +368,7 @@ private:
 // Only recent versions of SuiteSparse define SuiteSparse_long, but "long int" is not
 // what SuiteSparse is using as long data type on all platforms. If the types differ
 // we have to resort to SuiteSparse_long.
-#if defined(__MINGW32__) || defined(_MSC_VER)
+#if defined(__MINGW32__) || defined(_MSC_VER) || (defined(SUITESPARSE_MAIN_VERSION) && (SUITESPARSE_MAIN_VERSION >= 6))
   typedef SuiteSparse_long SuiteSparseIntType;
 #else
   typedef long int SuiteSparseIntType;
@@ -778,10 +787,12 @@ public:
     // start cholmod with long int
     cholmod_l_start ( &_settings );    
     // CHOLMOD_SINGLE not yet supported
+#if SET_CHOLMOD_DTYPE
     if ( aol::RealTrait<RealType>::ALIAS == aol::FLOAT )
       _settings.dtype = CHOLMOD_DOUBLE; // CHOLMOD_SINGLE not yet supported
     else
       _settings.dtype = CHOLMOD_DOUBLE;
+#endif
   }
 
   SparseQRBlockInverseOp( const aol::BlockOpBase<RealType,MatrixType> &BlockMat, 
@@ -792,10 +803,12 @@ public:
       // start cholmod with long int
       cholmod_l_start ( &_settings );    
       // CHOLMOD_SINGLE not yet supported
+#if SET_CHOLMOD_DTYPE
       if ( aol::RealTrait<RealType>::ALIAS == aol::FLOAT )
         _settings.dtype = CHOLMOD_DOUBLE; // CHOLMOD_SINGLE not yet supported
       else
         _settings.dtype = CHOLMOD_DOUBLE;
+#endif
       setMatrix( BlockMat, MaxNumEntriesPerBlockRow );
   }
 

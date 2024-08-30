@@ -77,6 +77,17 @@ OPTION ( GENERATE_INCLUDE_TEST "In development cmake replacement of util/testInd
 #! \cmakeoption{Use OpenMP,OFF}
 #! \note for gcc and msvc compiler only
 OPTION ( USE_OPENMP "" OFF )
+IF ( USE_OPENMP )
+  CMAKE_MINIMUM_REQUIRED ( VERSION 3.9 )
+  FIND_PACKAGE ( OpenMP REQUIRED )
+  IF ( OpenMP_CXX_FOUND )
+    # Since SYSTEM_LIBRARIES is handed to TARGET_LINK_LIBRARIES, this should also set the necessary compile flags.
+    LIST ( APPEND SYSTEM_LIBRARIES OpenMP::OpenMP_CXX )
+    # With OpenMP the vector manager does more harm then good, so turn it off
+    # (overriding the user setting but keeping the cache value).
+    SET ( DO_NOT_USE_MEMORYMANAGER 1 )
+    ENDIF ( OpenMP_CXX_FOUND )
+ENDIF ( USE_OPENMP )
 
 # First configure some compiler specific things.
 IF ( MSVC )
@@ -92,22 +103,8 @@ IF ( MSVC )
 
   IF ( CMAKE_SIZEOF_VOID_P EQUAL 8 )
     # With x64, the object file for tpCFEGrid.cpp gets so big that we need to enable large object files.
-    SET ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /bigobj" )
+    ADD_COMPILE_OPTIONS ( /bigobj )
   ENDIF ( )
-
-  IF ( USE_OPENMP )
-    IF ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
-      ADD_COMPILE_OPTIONS ( -Xclang -fopenmp )
-      FIND_LIBRARY ( OMP_LIBRARY NAMES omp libomp )
-      IF ( NOT OMP_LIBRARY )
-        MESSAGE ( FATAL_ERROR "Could not find libomp." )
-      ENDIF ()
-      LIST ( APPEND SYSTEM_LIBRARIES ${OMP_LIBRARY} )
-    ELSE ( )
-      ADD_COMPILE_OPTIONS ( /openmp )
-    ENDIF ( )
-    SET ( DO_NOT_USE_MEMORYMANAGER 1 )
-  ENDIF ( USE_OPENMP )
 
   # VC++ doesn't have dirent.h, so try to find it. For this we supply a VC++ compatible version in external/dirent.
   FIND_PATH ( MSVC_DIRENT_INCLUDE_DIR dirent.h external/dirent )
@@ -201,14 +198,6 @@ IF ( CMAKE_COMPILER_IS_GNUCXX )
      INCLUDE_DIRECTORIES ( SYSTEM ${MPI_INCLUDE_PATH} )
      LIST ( APPEND SYSTEM_LIBRARIES ${MPI_LIBRARIES} )
   ENDIF ( USE_MPI )
-
-  IF ( USE_OPENMP )
-    ADD_COMPILE_OPTIONS ( -fopenmp )
-    SET ( SYSTEM_LIBRARIES ${SYSTEM_LIBRARIES} -lgomp )
-    # With OpenMP the vector manager does more harm then good, so turn it off
-    # (overriding the user setting but keeping the cache value).
-    SET ( DO_NOT_USE_MEMORYMANAGER 1 )
-  ENDIF ( USE_OPENMP )
 
   #! \cmakeoption{Use gprof profiler,OFF}
   #! \note for gcc compiler only
@@ -470,10 +459,10 @@ IF ( USE_PNG )
     IF ( NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/external/zlib-source/zlib.h )
       SET ( ZLIB_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/zlib-source )
       SET ( ZLIB_ARCHIVE ${ZLIB_SOURCE_DIR}/zlib.tar.gz )
-      FILE ( DOWNLOAD https://zlib.net/zlib-1.2.11.tar.gz ${ZLIB_ARCHIVE} SHOW_PROGRESS )
+      FILE ( DOWNLOAD https://www.zlib.net/fossils/zlib-1.2.13.tar.gz ${ZLIB_ARCHIVE} SHOW_PROGRESS )
       EXECUTE_PROCESS ( COMMAND ${CMAKE_COMMAND} -E tar xzf ${ZLIB_ARCHIVE} WORKING_DIRECTORY ${ZLIB_SOURCE_DIR} )
 
-      SET ( ZLIB_EXTRACTED_SOURCE_DIR ${ZLIB_SOURCE_DIR}/zlib-1.2.11 )
+      SET ( ZLIB_EXTRACTED_SOURCE_DIR ${ZLIB_SOURCE_DIR}/zlib-1.2.13 )
 
       # Copy all files from this subdirectory into the directory we want to have the source in.
       FILE ( GLOB ZLIB_FILES ${ZLIB_EXTRACTED_SOURCE_DIR}/*.c ${ZLIB_EXTRACTED_SOURCE_DIR}/*.h )

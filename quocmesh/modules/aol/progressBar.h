@@ -104,7 +104,7 @@ class ProgressBar {
 protected:
   char _prefix;
   char _postfix;
-  char _percent[10];
+  std::string _percent;
   char _fullChar[_screenWidth];
   char _emptyChar[_screenWidth];
   char _backSpace[_screenWidth];
@@ -124,7 +124,7 @@ protected:
    */
   void createPercentage ( int p ) {
     if ( _showPercentage ) {
-      sprintf ( _percent, " %3d%% ", p );
+      _percent = aol::strprintf( " %3d%% ", p );
     }
   }
 
@@ -247,7 +247,7 @@ public:
   }
   
   const char* getPercentStr ( ) const {
-    return _percent;
+    return _percent.c_str();
   }
 };
 

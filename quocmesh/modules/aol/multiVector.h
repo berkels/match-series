@@ -347,9 +347,8 @@ public:
   Vector<DataType> &operator[] ( int Index ) {
 #ifdef BOUNDS_CHECK
     if ( Index < 0 || Index >= static_cast<int>(vecs.size()) ) {
-      char error[1024];
-      sprintf ( error, "MultiVector<Realtype>::operator[]: index %d out of bounds. N = %d\n", Index, static_cast<int>(vecs.size()) );
-      throw OutOfBoundsException ( error, __FILE__, __LINE__ );
+      std::string error = aol::strprintf ( "MultiVector<Realtype>::operator[]: index %d out of bounds. N = %d\n", Index, static_cast<int>(vecs.size()) );
+      throw OutOfBoundsException ( error.c_str(), __FILE__, __LINE__ );
     }
 #endif
     return * ( vecs[ Index ].ptr );
@@ -358,9 +357,8 @@ public:
   const Vector<DataType> &operator[] ( int Index ) const {
 #ifdef BOUNDS_CHECK
     if ( Index < 0 || Index >= static_cast<int>(vecs.size()) ) {
-      char error[1024];
-      sprintf ( error, "MultiVector<Realtype>::operator[]: index %d out of bounds. N = %d\n", Index, static_cast<int>(vecs.size()) );
-      throw OutOfBoundsException ( error, __FILE__, __LINE__ );
+      std::string error = aol::strprintf ( "MultiVector<Realtype>::operator[]: index %d out of bounds. N = %d\n", Index, static_cast<int>(vecs.size()) );
+      throw OutOfBoundsException ( error.c_str(), __FILE__, __LINE__ );
     }
 #endif
     return * ( vecs[ Index ].ptr );

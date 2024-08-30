@@ -537,9 +537,8 @@ int qc::getGridLevelFromArrayFile ( const string &ArrayFileName ) {
     break;
   }
   default: {
-    char errorMessage[1024];
-    sprintf( errorMessage, "Read header from %s:\nArray width of %d not equal to 2^d+1\nNote: qc::getGridLevelFromArrayFile can't be used on PNGs.\n", ArrayFileName.c_str(), header.numX );
-    throw aol::Exception ( errorMessage, __FILE__, __LINE__ );
+    std::string errorMessage = aol::strprintf ( "Read header from %s:\nArray width of %d not equal to 2^d+1\nNote: qc::getGridLevelFromArrayFile can't be used on PNGs.\n", ArrayFileName.c_str(), header.numX );
+    throw aol::Exception ( errorMessage.c_str(), __FILE__, __LINE__ );
     return 0;
   }
   }

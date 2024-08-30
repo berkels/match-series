@@ -174,18 +174,16 @@ protected:
   inline void boundsCheck ( const int I, const int J, const char* Msg, const char* Fi, const int Li ) const {
     const bool isIn = ( I >= 0 && I < _size[0] && J >= 0 && J < _size[1] );
     if ( !isIn ) {
-      char errmsg[1024];
-      sprintf ( errmsg, "%s %d %d", Msg, I, J );
-      throw aol::OutOfBoundsException ( errmsg, Fi, Li );
+      std::string errmsg = aol::strprintf ( "%s %d %d", Msg, I, J );
+      throw aol::OutOfBoundsException ( errmsg.c_str(), Fi, Li );
     }
   }
 
   inline void boundsCheck ( const int I, const char* Msg, const char* Fi, const int Li ) const {
     const bool isIn = I >= 0 && I < static_cast<int> ( _data.size() );
     if ( !isIn ) {
-      char errmsg[1024];
-      sprintf ( errmsg, "%s %d", Msg, I );
-      throw aol::OutOfBoundsException ( errmsg, Fi, Li );
+      std::string errmsg = aol::strprintf ( "%s %d", Msg, I );
+      throw aol::OutOfBoundsException ( errmsg.c_str(), Fi, Li );
     }
   }
 #endif
@@ -351,9 +349,8 @@ protected:
   inline void boundsCheck ( const int i, const char* msg, const char* fi, const int li ) const {
     const bool isIn = i >= 0 && i < static_cast<int> ( _data.size() );
     if ( !isIn ) {
-      char errmsg[1024];
-      sprintf ( errmsg, "%s %d", msg, i );
-      throw aol::OutOfBoundsException ( errmsg, fi, li );
+      std::string errmsg = aol::strprintf ( "%s %d", msg, i );
+      throw aol::OutOfBoundsException ( errmsg.c_str(), fi, li );
     }
   }
 
@@ -608,9 +605,8 @@ protected:
   inline bool boundsCheck ( const int i, const int j, const int k, const char* msg, const char* fi, const int li ) const {
     const bool isIn = containsPoint ( i, j, k );
     if ( !isIn ) {
-      char errmsg[1024];
-      sprintf ( errmsg, "%s %d %d %d", msg, i, j, k );
-      throw aol::OutOfBoundsException ( errmsg, fi, li );
+      std::string errmsg = aol::strprintf ( "%s %d %d %d", msg, i, j, k );
+      throw aol::OutOfBoundsException ( errmsg.c_str(), fi, li );
     }
     return ( isIn );
   }

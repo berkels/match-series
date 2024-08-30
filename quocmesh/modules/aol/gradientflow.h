@@ -184,9 +184,9 @@ public:
         gateaux -= energy;
 
       char gateauxOutTempFileName[1024];
-      sprintf ( gateauxOutTempFileName, "gateaux.datXXXXXX" );
+      strncpy ( gateauxOutTempFileName, "gateaux.datXXXXXX", 1023 );
       char enOutTempFileName[1024];
-      sprintf ( enOutTempFileName, "energy.datXXXXXX" );
+      strncpy ( enOutTempFileName, "energy.datXXXXXX", 1023 );
       ofstream gateaux_out;
       generateTemporaryFile ( gateauxOutTempFileName, gateaux_out );
       ofstream en_out;
@@ -457,12 +457,11 @@ void testFirstDerivativeVectorAllDirections ( const typename ConfiguratorType::I
 
   DE.apply ( Position, gr );
   aol::DescentDirValidator<RealType, aol::Vector<RealType> > validator ( StepSize * Grid.H() * Grid.H(), 120, lumpedMass, E, false );
-  char filename[1024];
   for ( int i = 0; i < Position.size(); i++ ) {
-    sprintf ( filename, "%s_%03d", BasePlotFileName, i );
+    std::string filename = aol::strprintf ( "%s_%03d", BasePlotFileName, i );
     dd.setAll ( 0. );
     dd[i] = 1.;
-    validator.validateAndPlotToPNG ( Position, dd, gr, filename );
+    validator.validateAndPlotToPNG ( Position, dd, gr, filename.c_str() );
   }
 }
 
@@ -534,13 +533,12 @@ void testFirstDerivativeMultiVectorAllDirections ( const typename ConfiguratorTy
 
   DE.apply ( Position, gr );
   aol::DescentDirValidator<RealType, aol::MultiVector<RealType> > validator ( StepSize * Grid.H() * Grid.H(), 120, blockLumpedMass, E, false );
-  char filename[1024];
   for ( int i = 0; i < Position.numComponents(); i++ ) {
     for ( int j = 0; j < Position[i].size(); j++ ) {
-      sprintf ( filename, "%s_%d_%03d", BasePlotFileName, i, j );
+      std::string filename = aol::strprintf ("%s_%d_%03d", BasePlotFileName, i, j );
       dd.setAll ( 0. );
       dd[i][j] = 1.;
-      validator.validateAndPlotToPNG ( Position, dd, gr, filename );
+      validator.validateAndPlotToPNG ( Position, dd, gr, filename.c_str() );
     }
   }
 }
@@ -566,12 +564,11 @@ void testFirstDerivativeMultiVectorSingleComponentAllDirections
 
   DE.apply ( Position, gr );
   aol::DescentDirValidator<RealType, aol::MultiVector<RealType> > validator ( StepSize * Grid.H() * Grid.H(), 120, blockLumpedMass, E, false );
-  char filename[1024];
   for ( int j = 0; j < Position[Component].size(); j++ ) {
-    sprintf ( filename, "%s_%03d", BasePlotFileName, j );
+    std::string filename = aol::strprintf ( "%s_%03d", BasePlotFileName, j );
     dd.setAll ( 0. );
     dd[Component][j] = 1.;
-    validator.validateAndPlotToPNG ( Position, dd, gr, filename );
+    validator.validateAndPlotToPNG ( Position, dd, gr, filename.c_str() );
   }
 }
 
@@ -652,10 +649,9 @@ void testSecondDerivativeMultiVectorAllDirections ( const typename ConfiguratorT
     for( int j = 0; j < Grid.getNumberOfNodes(); j++){
       mdirection[i].setZero();
       mdirection[i][j] = 1.;
-      char fn[1024];
-      sprintf( fn, "%s_%d_%03d", BasePlotFileName, i, j );
+      std::string fn = aol::strprintf ( "%s_%d_%03d", BasePlotFileName, i, j );
       aol::testSecondDerivativeMultiVector<ConfiguratorType, SecondDerivativeType>
-        ( Grid, Position, mdirection, F, DF, fn, PMatDF, StepSize, false );
+        ( Grid, Position, mdirection, F, DF, fn.c_str(), PMatDF, StepSize, false );
     }
   }
   if ( DeleteMatrixPointer )
@@ -803,9 +799,9 @@ protected:
   string getSuffixString ( const aol::Vec< VecType::Depth, int>& idxVec ) const {
     char fn[1024];
     switch ( VecType::Depth ){
-      case 1: sprintf( fn, "%03d", idxVec[0] ); break;
-      case 2: sprintf( fn, "%d_%03d", idxVec[0], idxVec[1] ); break;
-      case 3: sprintf( fn, "%d_%03d_%d", idxVec[0], idxVec[1], idxVec[2] );  break;
+      case 1: snprintf( fn, 1024, "%03d", idxVec[0] ); break;
+      case 2: snprintf( fn, 1024, "%d_%03d", idxVec[0], idxVec[1] ); break;
+      case 3: snprintf( fn, 1024, "%d_%03d_%d", idxVec[0], idxVec[1], idxVec[2] );  break;
       default: throw aol::Exception ( "aol::DerivativeValidatorBase<>::getSuffixString: unvalid VecTyp.", __FILE__, __LINE__ );
     }
     string temp = fn;
@@ -927,9 +923,8 @@ public:
       descentDirection.setZero();
       aol::Vec< VecType::Depth, int>  idxVec = this->setIthComponent ( i, 1., descentDirection );
 
-      char fn[1024];
-      sprintf( fn, "%s_%s", BasePlotFileName, this->getSuffixString( idxVec ).c_str() );
-      testDirection( Position, descentDirection, gradient, fn, PlotDifference );
+      std::string fn = aol::strprintf ( "%s_%s", BasePlotFileName, this->getSuffixString( idxVec ).c_str() );
+      testDirection( Position, descentDirection, gradient, fn.c_str(), PlotDifference );
     }
     this->unsetCtrlCHandler();
     cerr << endl;
@@ -950,9 +945,8 @@ public:
       descentDirection.setZero();
       aol::Vec< VecType::Depth, int>  idxVec = this->setIthComponent ( i, 1., descentDirection );
 
-      char fn[1024];
-      sprintf( fn, "%s_%s", BasePlotFileName, this->getSuffixString( idxVec ).c_str() );
-      testDirection( Position, descentDirection, gradient, fn, PlotDifference );
+      std::string fn = aol::strprintf ( "%s_%s", BasePlotFileName, this->getSuffixString( idxVec ).c_str() );
+      testDirection( Position, descentDirection, gradient, fn.c_str(), PlotDifference );
     }
   }
   
@@ -977,9 +971,8 @@ public:
       
       aol::Vec< VecType::Depth, int>  idxVec = this->setIthComponent ( directionNum, 1., descentDirection );
 
-      char fn[1024];
-      sprintf( fn, "%s_%s", BasePlotFileName, this->getSuffixString( idxVec ).c_str() );
-      testDirection( Position, descentDirection, gradient, fn, PlotDifference );
+      std::string fn = aol::strprintf ( "%s_%s", BasePlotFileName, this->getSuffixString( idxVec ).c_str() );
+      testDirection( Position, descentDirection, gradient, fn.c_str(), PlotDifference );
       pb++;
     }
     this->unsetCtrlCHandler();
@@ -1158,9 +1151,8 @@ public:
       innerDirection = gradientWRTOuterDirection;
       innerDirection *= -1;
 
-      char fn[1024];
-      sprintf( fn, "%s_%s", BasePlotFileName, this->getSuffixString( idxVec ).c_str() );
-      testDirection( Position, outerDirection, innerDirection, gradientWRTOuterDirection, fn );
+      std::string fn = aol::strprintf ( "%s_%s", BasePlotFileName, this->getSuffixString( idxVec ).c_str() );
+      testDirection( Position, outerDirection, innerDirection, gradientWRTOuterDirection, fn.c_str() );
     }
     this->unsetCtrlCHandler();
     cerr << endl;
@@ -1192,9 +1184,8 @@ public:
         if (!this->wantsToCheckEntry(outerDirectionNum) || !this->wantsToCheckEntry(innerDirectionNum)) continue;
         innerDirection.setZero();
         aol::Vec< VecType::Depth, int>  idxVecInner = this->setIthComponent ( innerDirectionNum, 1., innerDirection );
-        char fn[1024];
-        sprintf( fn, "%s_%s_%s", BasePlotFileName, this->getSuffixString( idxVecOuter ).c_str(), this->getSuffixString( idxVecInner ).c_str() );
-        testDirection( Position, outerDirection, innerDirection, gradientWRTOuterDirection, fn );
+        std::string fn = aol::strprintf ( "%s_%s_%s", BasePlotFileName, this->getSuffixString( idxVecOuter ).c_str(), this->getSuffixString( idxVecInner ).c_str() );
+        testDirection( Position, outerDirection, innerDirection, gradientWRTOuterDirection, fn.c_str() );
       }
       if (this->_catchCtrlC && getCtrlCState())
         break;
@@ -1242,9 +1233,8 @@ public:
       
       _pMatDF->apply ( outerDirection, gradientWRTOuterDirection );        
         
-      char fn[1024];
-      sprintf( fn, "%s_%s_%s", BasePlotFileName, this->getSuffixString( idxVecOuter ).c_str(), this->getSuffixString( idxVecInner ).c_str() );
-      testDirection( Position, outerDirection, innerDirection, gradientWRTOuterDirection, fn );
+      std::string fn = aol::strprintf ( "%s_%s_%s", BasePlotFileName, this->getSuffixString( idxVecOuter ).c_str(), this->getSuffixString( idxVecInner ).c_str() );
+      testDirection( Position, outerDirection, innerDirection, gradientWRTOuterDirection, fn.c_str() );
       pb++;
 
       if (this->_catchCtrlC && getCtrlCState())

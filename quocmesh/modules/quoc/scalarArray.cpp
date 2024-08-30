@@ -147,7 +147,7 @@ void qc::ScalarArray<_DataType, qc::QC_1D>::save ( ostream &out, qc::SaveType ty
   char      info[4096];
 
   if ( !comment ) {
-    sprintf ( info, "# This is a QuOcMesh file of type %d (=%s) written %s", type, FILE_TYPE[type],
+    snprintf ( info, 4096, "# This is a QuOcMesh file of type %d (=%s) written %s", type, FILE_TYPE[type],
               aol::generateCurrentTimeAndDateString().c_str() );
     comment = info;
   }
@@ -328,7 +328,7 @@ void qc::ScalarArray<_DataType, qc::QC_2D>::save ( ostream &out, qc::SaveType ty
   char      info[4096];
 
   if ( !comment ) {
-    sprintf ( info, "# This is a QuOcMesh file of type %d (=%s) written %s", type, FILE_TYPE[type],
+    snprintf ( info, 4096, "# This is a QuOcMesh file of type %d (=%s) written %s", type, FILE_TYPE[type],
               aol::generateCurrentTimeAndDateString().c_str() );
     comment = info;
   }
@@ -592,8 +592,8 @@ void qc::ScalarArray<_DataType, qc::QC_2D>::loadTIFF ( const char *fileName ) {
 #if defined ( USE_LIB_TIFF )
   TIFF* tif = TIFFOpen ( fileName, "r" );
   if ( tif ) {
-    uint32 width = 0, height = 0;
-    uint16 bits = 0, format = 0, samplesPerPixel = 0;
+    uint32_t width = 0, height = 0;
+    uint16_t bits = 0, format = 0, samplesPerPixel = 0;
     TIFFGetField ( tif, TIFFTAG_IMAGEWIDTH, &width );
     TIFFGetField ( tif, TIFFTAG_IMAGELENGTH, &height );
     TIFFGetField ( tif, TIFFTAG_BITSPERSAMPLE, &bits );
@@ -607,9 +607,9 @@ void qc::ScalarArray<_DataType, qc::QC_2D>::loadTIFF ( const char *fileName ) {
 
     tsize_t scanline = TIFFScanlineSize(tif);
     tdata_t buf = _TIFFmalloc(scanline);
-    for ( uint32 row = 0; row < height; ++row ) {
+    for ( uint32_t row = 0; row < height; ++row ) {
       TIFFReadScanline(tif, buf, row);
-      for ( uint32 col = 0; col < width; ++col ) {
+      for ( uint32_t col = 0; col < width; ++col ) {
         if ( format == SAMPLEFORMAT_INT ) {
           if ( bits == 64 )
             this->set ( col, row, static_cast<int64_t*>(buf)[col] );
@@ -646,6 +646,8 @@ void qc::ScalarArray<_DataType, qc::QC_2D>::loadTIFF ( const char *fileName ) {
     _TIFFfree ( buf );
     TIFFClose ( tif );
   }
+  else
+    throw aol::Exception ( aol::strprintf ( "Error opening TIFF file \"%s\".", fileName ).c_str(), __FILE__, __LINE__ );
 #elif defined ( USE_EXTERNAL_CIMG )
   cimg_library::CImg<_DataType> cimg;
   cimg.load_tiff ( fileName );
@@ -688,8 +690,8 @@ void qc::ScalarArray<_DataType, qc::QC_2D>::saveTIFF ( const char *fileName ) co
     tsize_t scanline = TIFFScanlineSize(tif);
     tdata_t buf = _TIFFmalloc(scanline);
     TIFFSetField ( tif, TIFFTAG_ROWSPERSTRIP, TIFFDefaultStripSize ( tif, scanline ) );
-    for ( uint32 row = 0; row < static_cast<uint32>(this->getNumY ( )) ; ++row ) {
-      for ( uint32 col = 0; col < static_cast<uint32>(this->getNumX ( )); ++col ) {
+    for ( uint32_t row = 0; row < static_cast<uint32_t>(this->getNumY ( )) ; ++row ) {
+      for ( uint32_t col = 0; col < static_cast<uint32_t>(this->getNumX ( )); ++col ) {
         static_cast<float*>(buf)[col] = static_cast<float> ( this->get ( col, row ) );
       }
       TIFFWriteScanline ( tif, buf, row, 0 );
@@ -1206,7 +1208,7 @@ void qc::ScalarArray < _DataType, qc::QC_3D >::save ( ostream &out, qc::SaveType
     throw aol::TypeException ( "qc::ScalarArray<DataType, qc::QC_3D>::save: impossible with type PNG_2D", __FILE__, __LINE__ );
 
   if ( !comment ) {
-    sprintf ( info, "# This is a QuOcMesh file of type %d (=%s) written %s", type, FILE_TYPE[type], aol::generateCurrentTimeAndDateString().c_str() );
+    snprintf ( info, 4096, "# This is a QuOcMesh file of type %d (=%s) written %s", type, FILE_TYPE[type], aol::generateCurrentTimeAndDateString().c_str() );
     comment = info;
   }
 
@@ -1312,10 +1314,9 @@ void qc::ScalarArray<_DataType, qc::QC_3D>::loadSlices ( const char *fileNameMas
   }
   // center the slices in the array:
   const int offset = ( depth - ( end - begin ) ) / 2;
-  char filename[1024];
   for ( int s = begin; s <= end; ++s ) {
-    sprintf ( filename, fileNameMask, s );
-    slice.load ( filename );
+    std::string filename = aol::strprintf ( fileNameMask, s );
+    slice.load ( filename.c_str() );
     this->putSlice ( dir, s - begin + offset, slice );
   }
 }
@@ -1403,10 +1404,9 @@ saveSlices ( const char *fileNameMask,
   tmp.quietMode = this->quietMode;
 
   for ( int z = 0; z < numOfSlices; ++z ) {
-    char fileName[1024];
-    sprintf ( fileName, fileNameMask, z );
+    std::string fileName = aol::strprintf ( fileNameMask, z );
     this->getSlice ( dir, z, tmp );
-    tmp.save ( fileName, type, comment );
+    tmp.save ( fileName.c_str(), type, comment );
   }
   if ( !this->quietMode )
     cerr << "Successfully wrote to 2D PGM " << type << " stream slices\n";
@@ -1669,7 +1669,7 @@ void qc::ScalarArray<_DataType, qc::QC_3D>::saveNetCDF ( const char *fileName, c
       curComment = static_cast<char *> ( malloc(curCommentLen + 1) );
       nc_get_att_text ( ncid, varid, "comment", curComment );
       newComment = aol::strprintf ( "%s ; %s", curComment, comment );
-      delete curComment;
+      free ( curComment );
     }
   }
 
@@ -1696,7 +1696,7 @@ void qc::netCDFgetDepthFirstDataAndGroups ( const char *fileName, std::vector<st
   // Declare ids and open data file
   int ncid, retval;
   if ((retval = nc_open(fileName, NC_NOWRITE, &ncid)))
-    throw aol::Exception ( nc_strerror(retval), __FILE__, __LINE__ );
+    throw aol::Exception ( std::string("Could not open ") + fileName + "\n" + nc_strerror(retval), __FILE__, __LINE__ );
   
   // Perform depth first search for a node with a valid dataset
   std::stack<int> s;

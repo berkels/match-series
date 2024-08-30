@@ -239,6 +239,9 @@ template <typename Type> void testProductWillFit ( const std::string type ) {
     largefac *= (1 + 2*std::numeric_limits<Type>::epsilon());
     // even works with 1 -/+ epsilon
   }
+  // Under ARM with uint64_t, we get smallfac == largefac. Account for that here.
+  else if ( smallfac == largefac )
+    smallfac -= 1;
 
   testProductWillFit<Type> ( type, smallfac, smallfac, false );
   testProductWillFit<Type> ( type, largefac, largefac, true  );

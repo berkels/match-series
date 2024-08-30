@@ -1374,9 +1374,8 @@ public:
       _solver.setAccuracy ( accuracy );
       _solver.apply ( arg, dest );
 
-      char filename[1024];
-      sprintf ( filename, _filenamemask, i );
-      dest.save ( filename, qc::PGM_DOUBLE_BINARY );
+      std::string filename = aol::strprintf ( _filenamemask, i );
+      dest.save ( filename.c_str(), qc::PGM_DOUBLE_BINARY );
     }
 
   }

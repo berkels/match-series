@@ -873,9 +873,8 @@ template <typename _DataType>
 _DataType aol::Vector<_DataType>::sumWeighted ( aol::Vector<_DataType> const& weight ) const {
 #ifdef BOUNDS_CHECK
   if ( weight.size() < _size ) {
-    char error[1024];
-    sprintf ( error, "Vector<DataType>::sumWeighted: weight vector not long enough (%d), should be %d at least.\n", weight.size(), _size );
-    throw OutOfBoundsException ( error, __FILE__, __LINE__ );
+    std::string error = aol::strprintf ( "Vector<DataType>::sumWeighted: weight vector not long enough (%d), should be %d at least.\n", weight.size(), _size );
+    throw OutOfBoundsException ( error.c_str(), __FILE__, __LINE__ );
   }
 #endif
   _DataType ret = 0.;

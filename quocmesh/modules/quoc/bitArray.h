@@ -101,6 +101,13 @@ public:
     BitVector::set ( ar_index ( Coords[0], Coords[1] ), Value );
   }
 
+  inline void set ( const aol::Vec2<int> &Coords, const bool Value ) {
+#ifdef BOUNDS_CHECK
+    boundsCheck ( Coords[0], Coords[1], "set" );
+#endif
+    BitVector::set ( ar_index ( Coords[0], Coords[1] ), Value );
+  }
+
   inline bool get ( const int ix, const int iy ) const {
 #ifdef BOUNDS_CHECK
     boundsCheck ( ix, iy, "get" );
@@ -286,9 +293,8 @@ protected:
 #ifdef BOUNDS_CHECK
   inline void boundsCheck ( const int ix, const int iy, const char* where ) const {
     if ( ! ( ( ix < _numX ) && ( iy < _numY ) && ( ix >= 0 ) && ( iy >= 0 ) ) ) {
-      char errmsg[1024];
-      sprintf( errmsg, "qc::BitArray<qc::QC_2D>::%s %d %d are out of bounds (%d %d)!", where, ix, iy, _numX, _numY );
-      throw aol::OutOfBoundsException( errmsg, __FILE__, __LINE__ );
+      std::string errmsg = aol::strprintf ( "qc::BitArray<qc::QC_2D>::%s %d %d are out of bounds (%d %d)!", where, ix, iy, _numX, _numY );
+      throw aol::OutOfBoundsException( errmsg.c_str(), __FILE__, __LINE__ );
     }
   }
 #endif

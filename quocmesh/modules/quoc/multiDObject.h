@@ -81,9 +81,8 @@ protected:
 #ifdef BOUNDS_CHECK
   void boundsCheck ( const int ix, const int iy, const int iz, const char* methodName, const char* fileName, const int lineNumber ) const {
     if ( ! ( ( ix < _numX ) && ( iy < _numY ) && ( iz < _numZ ) && ( ix >= 0 ) && ( iy >= 0 ) && ( iz >= 0 ) ) ) {
-      char errmsg[1024];
-      sprintf( errmsg, "%s: %d %d %d are out of bounds (%d %d %d)!", methodName, ix, iy, iz, _numX, _numY, _numZ );
-      throw aol::OutOfBoundsException( errmsg, fileName, lineNumber );
+      std::string errmsg = aol::strprintf ( "%s: %d %d %d are out of bounds (%d %d %d)!", methodName, ix, iy, iz, _numX, _numY, _numZ );
+      throw aol::OutOfBoundsException( errmsg.c_str(), fileName, lineNumber );
     }
   }
 #endif

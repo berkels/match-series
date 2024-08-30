@@ -1,5 +1,5 @@
 # You can download wavelet1d from:
-# http://code.google.com/p/wavelet1d/downloads/detail?name=wavelet-03.rar&can=2&q=
+# https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/wavelet1d/wavelet-03.rar
 #
 # TODO: some changes have to be made automatically to wavelet.cpp
 

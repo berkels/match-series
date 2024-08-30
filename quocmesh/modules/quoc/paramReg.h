@@ -1988,6 +1988,7 @@ public:
   typedef _ConfiguratorType ConfiguratorType;
   typedef typename ConfiguratorType::RealType RealType;
   typedef aol::MultiVector<RealType> TransformationDOFType;
+  typedef aol::GridlessGradientDescent<RealType, TransformationDOFType> GradientDescentType;
   static const bool IsParametric = true;
 
 public:

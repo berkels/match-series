@@ -95,7 +95,7 @@ public:
                     const std::string OutputDir = "" )
   : qc::TVAlgorithmBase<ConfiguratorType> ( Initializer, Gamma, MaxIterations, StopEpsilon ),
     _numSegments ( NumSegments ),
-    _pIndicator ( NumSegments, NULL ),
+    _pIndicator ( NumSegments, static_cast<ArrayType*>(NULL) ),
     _tau ( 0.25 ),
     _unknownRegion ( false ),
     _outputDir ( OutputDir ) { }

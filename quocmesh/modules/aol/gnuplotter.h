@@ -77,7 +77,7 @@ public:
         continue;
 
       ofstream vectorFieldTempOutFile;
-      sprintf ( vectorFieldTempFileName, "vectorField.datXXXXXX" );
+      strncpy ( vectorFieldTempFileName, "vectorField.datXXXXXX", 1023 );
       generateTemporaryFile ( vectorFieldTempFileName, vectorFieldTempOutFile );
       qc::WriteVectorFieldAsGnuplotFile<RealType>( vectorFieldTempOutFile, VectorfieldX, VectorfieldY, Spacing, MaskVector[i] );
       vectorFieldTempOutFile.close();
@@ -120,7 +120,7 @@ public:
     qc::LevelSetDrawer<ConfiguratorType> drawer ( Grid );
     qc::ScalarArray<RealType, qc::QC_2D> levelsetFunctionArray ( levelsetFunction, Grid );
     char tempFileName[1024];
-    sprintf ( tempFileName, "isoline.datXXXXXX" );
+    strncpy ( tempFileName, "isoline.datXXXXXX", 1023 );
     ofstream tempOutFile;
     generateTemporaryFile ( tempFileName, tempOutFile );
     drawer.drawToGnuplot ( levelsetFunctionArray, tempOutFile, Isovalue, ScaleToUnitDomain, MirrorAtYAxis );
@@ -147,7 +147,7 @@ public:
   template<typename PictureType>
   void generateBackgroundPNGData ( const PictureType &Image ) {
     char tempFileName[1024];
-    sprintf ( tempFileName, "image.pngXXXXXX" );
+    strncpy ( tempFileName, "image.pngXXXXXX", 1023 );
     ofstream tempOutFile;
     generateTemporaryFile ( tempFileName, tempOutFile );
     PictureType image ( Image );
@@ -166,7 +166,7 @@ public:
                               const std::string PlotStyle = "" ) {
     QUOC_ASSERT ( FunctionPositions.size() == FunctionValues.size() );
     char tempFileName[1024];
-    sprintf ( tempFileName, "function.datXXXXXX" );
+    strncpy ( tempFileName, "function.datXXXXXX", 1023 );
     ofstream tempOutFile;
     generateTemporaryFile ( tempFileName, tempOutFile );
     for ( int i = 0; i < FunctionPositions.size(); ++i )
@@ -238,7 +238,7 @@ public:
   void generateCurvePlot ( const aol::RandomAccessContainer<aol::Vec<2, RealType> > &Points, const bool PlotAsPoints = false,
                            const std::string Title = "", const std::string PlotStyle = "" ) {
     char tempFileName[1024];
-    sprintf ( tempFileName, "curve.datXXXXXX" );
+    strncpy ( tempFileName, "curve.datXXXXXX", 1023 );
     ofstream tempOutFile;
     generateTemporaryFile ( tempFileName, tempOutFile );
     for ( int i = 0; i < Points.size()-1; ++i ) {
@@ -278,7 +278,7 @@ public:
 
   void generateClosedCurvePlot ( const aol::MultiVector<RealType> &Points, const std::string Title = "", const std::string PlotStyle = "" ) {
     char tempFileName[1024];
-    sprintf ( tempFileName, "curve.datXXXXXX" );
+    strncpy ( tempFileName, "curve.datXXXXXX", 1023 );
     ofstream tempOutFile;
     generateTemporaryFile ( tempFileName, tempOutFile );
     const int numPoints = Points.getEqualComponentSize();
@@ -302,7 +302,7 @@ public:
   //! \note Not compatible with aol::Plotter since that class doesn't work with 3D data.
   void generate3DCurvePlot ( const aol::RandomAccessContainer<aol::Vec<3, RealType> > &Points ) {
     char tempFileName[1024];
-    sprintf ( tempFileName, "curve.datXXXXXX" );
+    strncpy ( tempFileName, "curve.datXXXXXX", 1023 );
     ofstream tempOutFile;
     generateTemporaryFile ( tempFileName, tempOutFile );
     for ( int i = 0; i < Points.size(); ++i ) {
@@ -389,21 +389,21 @@ public:
   //! the combination DataIsScatterplot = true and DataIsVectorField = true is not defined
   Plotter ( const char *ndatafile, const bool DataIsVectorField = false, const bool DataIsScatterplot = false, const bool NoTitle = false ) {
     setDefaults();
-    sprintf ( _noutput, "%s", ndatafile );
+    snprintf ( _noutput, 2048, "%s", ndatafile );
     if ( !DataIsScatterplot ) {
       if( DataIsVectorField )
-        sprintf ( _plotcommand, "plot \"%s\" w vec", ndatafile );
+        snprintf ( _plotcommand, 2108, "plot \"%s\" w vec", ndatafile );
       else
-        sprintf ( _plotcommand, "plot \"%s\" w l", ndatafile );
+        snprintf ( _plotcommand, 2108, "plot \"%s\" w l", ndatafile );
     } else {
-      sprintf ( _plotcommand, "plot \"%s", ndatafile);
+      snprintf ( _plotcommand, 2108, "plot \"%s", ndatafile);
     }
     if ( NoTitle )
-      sprintf ( _plotcommand + strlen ( _plotcommand ), " notitle" );
+      snprintf ( _plotcommand + strlen ( _plotcommand ), 2108 - strlen ( _plotcommand ), " notitle" );
   }
   Plotter ( const std::vector<std::string> &VectorDataFileNames ) {
     setDefaults();
-    sprintf ( _noutput, "%s", VectorDataFileNames[0].c_str() );
+    snprintf ( _noutput, 2048, "%s", VectorDataFileNames[0].c_str() );
     string plotcommand = "plot ";
     for( unsigned int i = 0; i < VectorDataFileNames.size(); i++ ){
       plotcommand += " \"";
@@ -412,17 +412,17 @@ public:
       if( i < VectorDataFileNames.size()-1 )
         plotcommand += ",";
     }
-    sprintf ( _plotcommand, "%s", plotcommand.c_str() );
+    snprintf ( _plotcommand, 2108, "%s", plotcommand.c_str() );
   }
   Plotter ( const char *ndatafile1, const char *ndatafile2 ) {
     setDefaults();
-    sprintf ( _noutput, "%s_%s", ndatafile1, ndatafile2 );
-    sprintf ( _plotcommand, "plot \"%s\" w l, \"%s\" w l", ndatafile1, ndatafile2 );
+    snprintf ( _noutput, 2048, "%s_%s", ndatafile1, ndatafile2 );
+    snprintf ( _plotcommand, 2108, "plot \"%s\" w l, \"%s\" w l", ndatafile1, ndatafile2 );
   }
   Plotter ( const char *ndatafile1, const char *ndatafile2, const char *nameGraph1, const char *nameGraph2, const char *styleGraph1 = "l", const char *styleGraph2 = "l" ) {
     setDefaults();
-    sprintf ( _noutput, "%s_%s", ndatafile1, ndatafile2 );
-    sprintf ( _plotcommand, "plot \"%s\" title \"%s\" w %s, \"%s\" title \"%s\" w %s", ndatafile1, nameGraph1, styleGraph1, ndatafile2, nameGraph2, styleGraph2 );
+    snprintf ( _noutput, 2048, "%s_%s", ndatafile1, ndatafile2 );
+    snprintf ( _plotcommand, 2108, "plot \"%s\" title \"%s\" w %s, \"%s\" title \"%s\" w %s", ndatafile1, nameGraph1, styleGraph1, ndatafile2, nameGraph2, styleGraph2 );
   }
   ~Plotter () {}
 protected:
@@ -444,12 +444,12 @@ protected:
     _bmargin = -1;
     _outputDir[0] = '\0';
     _plotcommand[0] = '\0';
-    sprintf ( _noutput, "RENAMEME" );
+    snprintf ( _noutput, 2048, "RENAMEME" );
   }
 private:
   void gen() const {
     char gnuplotDatTempFileName[1024];
-    sprintf ( gnuplotDatTempFileName, "gnuplot.datXXXXXX" );
+    strncpy ( gnuplotDatTempFileName, "gnuplot.datXXXXXX", 1023 );
     ofstream gnuplotdat;
     generateTemporaryFile ( gnuplotDatTempFileName, gnuplotdat );
     gnuplotdat << _title;
@@ -588,7 +588,7 @@ public:
       gridInfo += "set ytics " + aol::to_string(yGridSize) + "\n";
     }
     gridInfo += "set grid xtics ytics lw " + aol::to_string(LineWidth) + " lt " + aol::to_string(LineType) + "\n\0";
-    sprintf ( _grid, "%s", gridInfo.c_str() );
+    snprintf ( _grid, 1024, "%s", gridInfo.c_str() );
   }
   void addText ( const std::string &text, const RealType XPos, const RealType YPos, const TextOrientation orientation = GNUPLOT_TEXT_LEFT,
                  const std::string &font = "Verdana", const int size = 10, const std::string &color = "black" ) {
@@ -603,22 +603,22 @@ public:
     _additionalTexts.push_back ( additionalText );
   }
   void set_outfile_base_name ( const char outfile_base_name[1024] ) {
-    sprintf ( _noutput, "%s", outfile_base_name );
+    snprintf ( _noutput, 2048, "%s", outfile_base_name );
   }
   void set_outfile_base_name ( const string outfile_base_name ) {
-    sprintf ( _noutput, "%s", outfile_base_name.c_str() );
+    snprintf ( _noutput, 2048, "%s", outfile_base_name.c_str() );
   }
   void set_title ( const char title[1024] ) {
-    sprintf ( _title, "set title \"%s\"\n", title );
+    snprintf ( _title, 1024, "set title \"%s\"\n", title );
   }
   void set_title ( const char title_line1[1024], const char title_line2[1024] ) {
-    sprintf ( _title, "set title \"%s\\n%s\"\n", title_line1, title_line2 );
+    snprintf ( _title, 1024, "set title \"%s\\n%s\"\n", title_line1, title_line2 );
   }
   void setXLabel ( const char XLabel[1024] ){
-    sprintf( _xlabel, "%s", XLabel );
+    snprintf( _xlabel, 1024, "%s", XLabel );
   }
   void setYLabel ( const char YLabel[1024] ){
-    sprintf( _ylabel, "%s", YLabel );
+    snprintf( _ylabel, 1024, "%s", YLabel );
   }
   void setLabels ( const char XLabel[1024], const char YLabel[1024] ){
     setXLabel ( XLabel );
@@ -637,37 +637,37 @@ public:
     _yRange = "";
   }
   void setSizeAxisRatioEqual ( ) {
-    sprintf ( _size, "set size ratio -1\n" );
+    snprintf ( _size, 1024, "set size ratio -1\n" );
   }
   void setSizeSquare ( ) {
-    sprintf ( _size, "set size square 1, 1.4285715\n" );
+    snprintf ( _size, 1024, "set size square 1, 1.4285715\n" );
   }
   void setSpecial ( const char *Special ){
-    sprintf( _special, "%s", Special );
+    snprintf( _special, 1024, "%s", Special );
   }
   void setXTics ( const bool EnableXTics = true ) {
     if ( EnableXTics ) _xtics[0] = '\0';
-    else sprintf( _xtics, "unset xtics\n" );
+    else snprintf( _xtics, 1024, "unset xtics\n" );
   }
   void setYTics ( const bool EnableYTics = true ) {
     if ( EnableYTics ) _ytics[0] = '\0';
-    else sprintf( _ytics, "unset ytics\n" );
+    else snprintf( _ytics, 1024, "unset ytics\n" );
   }
   void setTics ( const bool EnableTics = true ) {
     setXTics ( EnableTics );
     setYTics ( EnableTics );
   }
   void setXLogScale ( const bool EnableXLogScale = true ) {
-    if ( EnableXLogScale ) sprintf ( _xlogscale, "set logscale x\n" );
+    if ( EnableXLogScale ) snprintf ( _xlogscale, 1024, "set logscale x\n" );
     else _xlogscale[0] = '\0';
   }
   void setYLogScale ( const bool EnableYLogScale = true ) {
-    if ( EnableYLogScale ) sprintf ( _ylogscale, "set logscale y\n" );
+    if ( EnableYLogScale ) snprintf ( _ylogscale, 1024, "set logscale y\n" );
     else _ylogscale[0] = '\0';
   }
   void setBorder ( const bool EnableBorder = true ) {
     if ( EnableBorder ) _border[0] = '\0';
-    else sprintf ( _border, "unset border\n" );
+    else snprintf ( _border, 1024, "unset border\n" );
   }
   void setMarginsDefault ( ) {
     setMargins ( -1, -1, -1, -1 );
@@ -696,42 +696,42 @@ public:
     if ( NumX > 0 && NumY > 0 ) setCanvasSize ( 5, 5 * static_cast<RealType> ( NumY ) / static_cast<RealType> ( NumX ) ); // Standard canvas size is 5 x 3, so we make it 5 x 5*(NumY/NumX)
   }
   void genPS() {
-    sprintf ( _terminal, "set terminal postscript color solid" );
-    sprintf ( _plotfile, "set output \"%s%s.ps\"\n", _outputDir, _noutput );
+    snprintf ( _terminal, 1024, "set terminal postscript color solid" );
+    snprintf ( _plotfile, 3089, "set output \"%s%s.ps\"\n", _outputDir, _noutput );
     gen();
   }
   void genEPS() {
-    sprintf ( _terminal, "set terminal postscript eps color solid" );
-    sprintf ( _plotfile, "set output \"%s%s.eps\"\n", _outputDir, _noutput );
+    snprintf ( _terminal, 1024, "set terminal postscript eps color solid" );
+    snprintf ( _plotfile, 3089, "set output \"%s%s.eps\"\n", _outputDir, _noutput );
     gen();
   }
   void genGrayEPS() {
-    sprintf ( _terminal, "set terminal postscript eps" );
-    sprintf ( _plotfile, "set output \"%s%s.eps\"\n", _outputDir, _noutput );
+    snprintf ( _terminal, 1024, "set terminal postscript eps" );
+    snprintf ( _plotfile, 3089, "set output \"%s%s.eps\"\n", _outputDir, _noutput );
     gen();
   }
   void genPNG() {
-    sprintf ( _terminal, "set terminal png" );
-    sprintf ( _plotfile, "set output \"%s%s.png\"\n", _outputDir, _noutput );
+    snprintf ( _terminal, 1024, "set terminal png" );
+    snprintf ( _plotfile, 3089, "set output \"%s%s.png\"\n", _outputDir, _noutput );
     gen();
   }
   void genGIF() {
 #ifdef WIN32
-    sprintf ( _terminal, "set terminal gif small" );
-    sprintf ( _plotfile, "set output \"%s%s.gif\"\n", _outputDir, _noutput );
+    snprintf ( _terminal, 1024, "set terminal gif small" );
+    snprintf ( _plotfile, 3089, "set output \"%s%s.gif\"\n", _outputDir, _noutput );
     gen();
 #else
     cerr << "Plot to .gif not implemented under Linux\n";
 #endif
   }
   void genLATEX() {
-    sprintf ( _terminal, "set terminal latex" );
-    sprintf ( _plotfile, "set output \"%s%s.tex\"\n", _outputDir, _noutput );
+    snprintf ( _terminal, 1024, "set terminal latex" );
+    snprintf ( _plotfile, 3089, "set output \"%s%s.tex\"\n", _outputDir, _noutput );
     gen();
   }
   void genPDF() {
-    sprintf ( _terminal, "set terminal pdf color solid" );
-    sprintf ( _plotfile, "set output \"%s%s.pdf\"\n", _outputDir, _noutput );
+    snprintf ( _terminal, 1024, "set terminal pdf color solid" );
+    snprintf ( _plotfile, 3089, "set output \"%s%s.pdf\"\n", _outputDir, _noutput );
     gen();
   }
   void plotToScreen() {
@@ -740,7 +740,7 @@ public:
     // To keep the plot window we tell the terminal to persist. Unfortunately this way
     // the plot window and the gnuplot console window have to be closed manually.
 #ifdef WIN32
-    sprintf ( _terminal, "set terminal wxt persist" );
+    snprintf ( _terminal, 1024, "set terminal wxt persist" );
 #else
     // The default terminal on all OSes should render the plot on the screen.
     _terminal[0] = '\0';
@@ -810,7 +810,7 @@ class CurvePlotter3D : protected Plotter<RealType> {
 public:
   CurvePlotter3D ( aol::RandomAccessContainer<aol::Vec<3, RealType> > &Points ) {
     _plotDataFileHandler.generate3DCurvePlot ( Points );
-    sprintf ( this->_plotcommand, "splot \"%s\" u 1:2:3 with lines notitle", _plotDataFileHandler.getDataFileNames()[0].c_str() );
+    snprintf ( this->_plotcommand, 2108, "splot \"%s\" u 1:2:3 with lines notitle", _plotDataFileHandler.getDataFileNames()[0].c_str() );
   }
 
   using Plotter<RealType>::set_outfile_base_name;

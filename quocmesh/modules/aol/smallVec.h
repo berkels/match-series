@@ -140,9 +140,8 @@ public:
   _DataType get ( int I ) const {
 #ifdef BOUNDS_CHECK
     if ( I < 0 || I >= dimension ) {
-      char error[1024];
-      sprintf ( error, "aol::VecN<_DataType>::get: index %d out of bounds. N = %d\n", I, dimension );
-      throw OutOfBoundsException ( error, __FILE__, __LINE__ );
+      std::string error = aol::strprintf ( "aol::VecN<_DataType>::get: index %d out of bounds. N = %d\n", I, dimension );
+      throw OutOfBoundsException ( error.c_str(), __FILE__, __LINE__ );
     }
 #endif
     return coords[I];
@@ -192,9 +191,8 @@ public:
   inline _DataType& operator[] ( int I ) {
 #ifdef BOUNDS_CHECK
     if ( I < 0 || I >= dimension ) {
-      char error[1024];
-      sprintf ( error, "aol::VecN<_DataType>::operator[]: index %d out of bounds. N = %d\n", I, dimension );
-      throw OutOfBoundsException ( error, __FILE__, __LINE__ );
+      std::string error = aol::strprintf ( "aol::VecN<_DataType>::operator[]: index %d out of bounds. N = %d\n", I, dimension );
+      throw OutOfBoundsException ( error.c_str(), __FILE__, __LINE__ );
     }
 #endif
     return coords[I];
@@ -204,9 +202,8 @@ public:
   inline const _DataType& operator[] ( int I ) const {
 #ifdef BOUNDS_CHECK
     if ( I < 0 || I >= dimension ) {
-      char error[1024];
-      sprintf ( error, "aol::VecN<_DataType>::operator[]: index %d out of bounds. N = %d\n", I, dimension );
-      throw OutOfBoundsException ( error, __FILE__, __LINE__ );
+      std::string error = aol::strprintf ( "aol::VecN<_DataType>::operator[]: index %d out of bounds. N = %d\n", I, dimension );
+      throw OutOfBoundsException ( error.c_str(), __FILE__, __LINE__ );
     }
 #endif
     return coords[I];
@@ -983,18 +980,18 @@ class BarCoord {};
 template <typename RealType>
 class BarCoord<2, RealType> : public Vec<3, RealType> {
 public:
-  BarCoord<2, RealType> () {
+  BarCoord () {
     (*this)[0] = ZOTrait<RealType>::one;
     (*this)[1] = ZOTrait<RealType>::zero;
     (*this)[2] = ZOTrait<RealType>::zero;
   }
-  BarCoord<2, RealType> ( RealType x0, RealType x1, RealType x2 ) {
+  BarCoord ( RealType x0, RealType x1, RealType x2 ) {
     (*this)[0] = x0;
     (*this)[1] = x1;
     (*this)[2] = x2;
   }
 
-  explicit BarCoord<2, RealType> ( int numOneCoord ) {
+  explicit BarCoord ( int numOneCoord ) {
     this->setAll ( ZOTrait<RealType>::zero );
     (*this)[numOneCoord] = ZOTrait<RealType>::one;
   }
@@ -1018,13 +1015,13 @@ public:
 template <typename RealType>
 class BarCoord<3, RealType> : public Vec<4, RealType> {
 public:
-  BarCoord<3, RealType> () {
+  BarCoord () {
     (*this)[0] = ZOTrait<RealType>::one;
     (*this)[1] = ZOTrait<RealType>::zero;
     (*this)[2] = ZOTrait<RealType>::zero;
     (*this)[3] = ZOTrait<RealType>::zero;
   }
-  BarCoord<3, RealType> ( RealType x0, RealType x1,
+  BarCoord ( RealType x0, RealType x1,
                           RealType x2, RealType x3 ) {
     (*this)[0] = x0;
     (*this)[1] = x1;
@@ -1032,7 +1029,7 @@ public:
     (*this)[3] = x3;
   }
 
-  explicit BarCoord<3, RealType> ( int numOneCoord ) {
+  explicit BarCoord ( int numOneCoord ) {
     this->setAll ( ZOTrait<RealType>::zero );
     (*this)[numOneCoord] = ZOTrait<RealType>::one;
   }

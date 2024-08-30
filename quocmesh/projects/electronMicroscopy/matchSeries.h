@@ -693,7 +693,8 @@ public:
       DE.appendReference ( derivatives[i] );
     }
 
-    typedef aol::H1GradientDescent<ConfiguratorType, aol::MultiVector<RealType>, typename qc::MultilevelArrayTrait<RealType, typename ConfiguratorType::InitType>::LinSmoothType > GDType;
+    typedef typename RegistrationType::GradientDescentType GDType;
+    // typedef aol::H1GradientDescent<ConfiguratorType, aol::MultiVector<RealType>, typename qc::MultilevelArrayTrait<RealType, typename ConfiguratorType::InitType>::LinSmoothType > GDType;
     GDType solver ( _registrationAlgo.getInitializerRef(), E, DE, _parser.getIntOrDefault ( "maxGDIterations", 1000 ), 1, _parser.getDoubleOrDefault ( "stopEpsilon", 5e-7 ) );
     solver.setConfigurationFlags ( GDType::USE_NONLINEAR_CG|GDType::LOG_GRADIENT_NORM_AT_OLD_POSITION|GDType::USE_GRADIENT_BASED_STOPPING );
 
@@ -921,12 +922,13 @@ typename ConfiguratorType::RealType findXShiftYConst ( const typename Configurat
 /**
  * \author Berkels
  */
-template <typename ConfiguratorType, typename ConfiguratorType1D, typename _RegistrationConfiguratorType1D, typename GradientDescentType = aol::H1GradientDescent<ConfiguratorType, aol::Vector<typename ConfiguratorType::RealType>, typename qc::MultilevelArrayTrait<typename ConfiguratorType::RealType, typename ConfiguratorType::InitType>::LinSmoothType> >
+template <typename ConfiguratorType, typename ConfiguratorType1D, typename _RegistrationConfiguratorType1D, typename _GradientDescentType = aol::H1GradientDescent<ConfiguratorType, aol::Vector<typename ConfiguratorType::RealType>, typename qc::MultilevelArrayTrait<typename ConfiguratorType::RealType, typename ConfiguratorType::InitType>::LinSmoothType> >
 class XShiftRegistrationMultilevelDescent : public qc::RegistrationMultilevelDescentInterface<ConfiguratorType> {
 public:
   typedef typename ConfiguratorType::RealType RealType;
   typedef typename ConfiguratorType::ArrayType ArrayType;
   typedef _RegistrationConfiguratorType1D RegistrationConfiguratorType1D;
+  typedef _GradientDescentType GradientDescentType;
   static const bool IsParametric = false;
 
   RealType _energyOfLastSolution;
@@ -986,13 +988,14 @@ template <typename _ConfiguratorType, template<class> class RegistrationConfigur
           template<class> class RegularizationConfiguratorType = qc::DirichletRegularizationConfigurator,
           typename DyadicConfiguratorType = qc::QuocConfiguratorTraitMultiLin<typename _ConfiguratorType::RealType, _ConfiguratorType::Dim, aol::GaussQuadrature<typename _ConfiguratorType::RealType, _ConfiguratorType::Dim,3> >,
           typename DyadicRegistrationMultilevelDescentType = qc::StandardRegistrationMultilevelDescent<DyadicConfiguratorType, RegistrationConfiguratorType<DyadicConfiguratorType>, RegularizationConfiguratorType<DyadicConfiguratorType> >,
-          typename GradientDescentType = aol::H1GradientDescent<_ConfiguratorType, aol::MultiVector<typename _ConfiguratorType::RealType> > >
+          typename _GradientDescentType = aol::H1GradientDescent<_ConfiguratorType, aol::MultiVector<typename _ConfiguratorType::RealType> > >
 class NonDyadicRegistrationMultilevelDescent : public qc::RegistrationInterface<_ConfiguratorType> {
 public:
   typedef _ConfiguratorType ConfiguratorType;
   typedef typename ConfiguratorType::RealType RealType;
   typedef typename ConfiguratorType::ArrayType ArrayType;
   typedef typename ConfiguratorType::InitType InitType;
+  typedef _GradientDescentType GradientDescentType;
   typedef qc::MultiArray<RealType, ConfiguratorType::Dim> TransformationDOFType;
   static const bool IsParametric = false;
 

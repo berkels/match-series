@@ -31,7 +31,10 @@ public:
     this->vecs.reserve ( ComponentSizes.size() );
     for ( int i = 0; i < ComponentSizes.size(); ++i ) {
       try {
-        this->vecs.push_back ( typename aol::MultiVector<_DataType>::vec_entry ( new aol::Vector<DataType> ( &_dataVector[k], ComponentSizes[i], aol::FLAT_COPY ) ) );
+        if ( ComponentSizes[i] > 0 )
+          this->vecs.push_back ( typename aol::MultiVector<_DataType>::vec_entry ( new aol::Vector<DataType> ( &_dataVector[k], ComponentSizes[i], aol::FLAT_COPY ) ) );
+        else
+          this->vecs.push_back ( typename aol::MultiVector<_DataType>::vec_entry ( new aol::Vector<DataType> ( 0 ) ) );
       }
       catch ( aol::Exception& ex ) {
         ex.consume ();
@@ -49,7 +52,10 @@ public:
     this->vecs.reserve ( ComponentSizes.size() );
     for ( int i = 0; i < ComponentSizes.size(); ++i ) {
       try {
-        this->vecs.push_back ( typename aol::MultiVector<_DataType>::vec_entry ( new aol::Vector<DataType> ( &_dataVector[k], ComponentSizes[i], aol::FLAT_COPY ) ) );
+        if ( ComponentSizes[i] > 0 )
+          this->vecs.push_back ( typename aol::MultiVector<_DataType>::vec_entry ( new aol::Vector<DataType> ( &_dataVector[k], ComponentSizes[i], aol::FLAT_COPY ) ) );
+        else
+          this->vecs.push_back ( typename aol::MultiVector<_DataType>::vec_entry ( new aol::Vector<DataType> ( 0 ) ) );
       }
       catch ( aol::Exception& ex ) {
         ex.consume ();
@@ -68,7 +74,10 @@ public:
     this->vecs.reserve ( _componentSizes.size() );
     for ( int i = 0; i < _componentSizes.size(); ++i ) {
       try {
-        this->vecs.push_back ( typename aol::MultiVector<_DataType>::vec_entry ( new aol::Vector<DataType> ( &_dataVector[k], _componentSizes[i], aol::FLAT_COPY ) ) );
+        if ( _componentSizes[i] > 0 )
+          this->vecs.push_back ( typename aol::MultiVector<_DataType>::vec_entry ( new aol::Vector<DataType> ( &_dataVector[k], _componentSizes[i], aol::FLAT_COPY ) ) );
+        else
+          this->vecs.push_back ( typename aol::MultiVector<_DataType>::vec_entry ( new aol::Vector<DataType> ( 0 ) ) );
       }
       catch ( aol::Exception& ex ) {
         ex.consume ();
@@ -146,10 +155,10 @@ public:
   using MatrixType::apply;
   using MatrixType::applyAdd;
   
-  MatrixWrapperForMultiVectorWithConcatData<MatrixType> ( const unsigned int NumRows, const unsigned int NumCols ) :
+  MatrixWrapperForMultiVectorWithConcatData ( const unsigned int NumRows, const unsigned int NumCols ) :
     MatrixType( NumRows, NumCols ) {}
   
-  explicit MatrixWrapperForMultiVectorWithConcatData<MatrixType> ( const MatrixWrapperForMultiVectorWithConcatData<MatrixType> &Other, aol::CopyFlag Flag = aol::DEEP_COPY ) :
+  explicit MatrixWrapperForMultiVectorWithConcatData ( const MatrixWrapperForMultiVectorWithConcatData<MatrixType> &Other, aol::CopyFlag Flag = aol::DEEP_COPY ) :
     MatrixType( Other, Flag ) {}
   
   void apply( const MultiVectorWithConcatData<typename MatrixType::DataType> &Arg, MultiVectorWithConcatData<typename MatrixType::DataType> &Dest ) const {
@@ -313,7 +322,9 @@ public:
     _cholmodSetting.nmethods = 1;
     _cholmodSetting.method [0].ordering = CHOLMOD_NATURAL;
     _cholmodSetting.postorder = false;*/
+#if SET_CHOLMOD_DTYPE
     _cholmodSetting.dtype = _dtype;
+#endif
   }
 
   ~TrustRegionMethod() {

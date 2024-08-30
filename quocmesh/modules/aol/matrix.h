@@ -78,7 +78,7 @@ ostream& printSparseOctave ( const MatrixType &A, ostream& os ) {
 template <typename MatrixType, typename DataType>
 void computeConditionNumberViaOctave ( const MatrixType &Mat, const bool CalcTime = false ) {
   char octaveDatTempFileName[1024];
-  sprintf ( octaveDatTempFileName, "octave.datXXXXXX" );
+  strncpy ( octaveDatTempFileName, "octave.datXXXXXX", 1023 );
   ofstream octavedat;
   generateTemporaryFile ( octaveDatTempFileName, octavedat );
 
@@ -87,9 +87,8 @@ void computeConditionNumberViaOctave ( const MatrixType &Mat, const bool CalcTim
   octavedat << "cond ( A ) " << endl;
   octavedat.close();
 
-  char systemCommand[1024];
-  sprintf ( systemCommand, "%soctave -q %s", ( CalcTime ? "time " : "" ), octaveDatTempFileName );
-  system ( systemCommand );
+  std::string systemCommand = aol::strprintf ( "%soctave -q %s", ( CalcTime ? "time " : "" ), octaveDatTempFileName );
+  system ( systemCommand.c_str() );
 
   remove ( octaveDatTempFileName );
 }
@@ -539,9 +538,8 @@ protected:
   inline bool boundsCheck ( const int i, const int j, const char* msg, const char* fi, const int li ) const {
     const bool isIn = ( i >= 0 && i < static_cast<int> ( this->_numRows ) && j >= 0 && j < static_cast<int> ( this->_numCols ) );
     if ( !isIn ) {
-      char errmsg[1024];
-      sprintf ( errmsg, "%s %d %d, bounds %d %d", msg, i, j, this->_numRows, this->_numCols );
-      throw OutOfBoundsException ( errmsg, fi, li );
+      std::string errmsg = aol::strprintf ( "%s %d %d, bounds %d %d", msg, i, j, this->_numRows, this->_numCols );
+      throw OutOfBoundsException ( errmsg.c_str(), fi, li );
     }
     return ( isIn );
   }

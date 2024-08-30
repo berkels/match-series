@@ -25,6 +25,11 @@ template <typename CubicElementType>
 class Element {
 public:
   Element() : _simplexNumber ( 0 ) {}
+
+  Element( const Element<CubicElementType>& Other ) :
+    _cubicEl ( Other.getCubicElement() ),
+    _simplexNumber ( Other.getSimplexNumber() ) {}
+
   Element ( const CubicElementType & CubicElement, short SimplexNumber )
   : _cubicEl ( CubicElement )
   , _simplexNumber ( SimplexNumber )
@@ -682,6 +687,10 @@ protected:
 public:
   FullNodeIterator() :
     _size( aol::Vec<Dim,short>() ) {}
+
+  FullNodeIterator( const FullNodeIterator<CubicGridType, Dim>& Other ) :
+    _cur( Other._cur ),
+    _size ( Other._size ) {}
 
   explicit FullNodeIterator( const qc::GridSize<Dim> &Size ) :
     _size ( Size ) {}

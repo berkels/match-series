@@ -127,10 +127,9 @@ public:
 template <typename RealType, typename GridType>
 void write1dImage ( const GridType &Grid, const aol::Vector< RealType > &Image, const char* baseFileName, const bool /*WriteSlices*/ = 0, const Comp /*Direction*/ = qc::QC_X ) {
   if ( Grid.getDimOfWorld() == 1 ) {
-    char fileName[1024];
-    sprintf ( fileName, "%s%s", baseFileName, qc::getDefaultArraySuffix( qc::QC_1D ) );
+    std::string fileName = aol::strprintf ( "%s%s", baseFileName, qc::getDefaultArraySuffix( qc::QC_1D ) );
     ScalarArray<RealType, qc::QC_1D> ImageArray ( Image, Grid.getNumX() );
-    ImageArray.save ( fileName, PGM_DOUBLE_BINARY );
+    ImageArray.save ( fileName.c_str(), PGM_DOUBLE_BINARY );
 
     aol::PlotDataFileHandler<RealType> plotHandler;
     plotHandler.generateFunctionPlot ( ImageArray );
@@ -162,7 +161,6 @@ void write2dImage ( const GridType &Grid, const aol::Vector< RealType > &Image, 
 template <typename RealType, typename GridType>
 void write3dImage ( const GridType &Grid, const aol::Vector< RealType > &Image, const char* baseFileName, const bool WriteSlices = 0, const Comp Direction = qc::QC_X ) {
   if ( Grid.getDimOfWorld() == 3 ) {
-    char fileName[1024];
     qc::ScalarArray<RealType, qc::QC_3D> *ImageArray = NULL;
     RealType minValue = Image.getMinValue();
     if ( ( minValue < 0 ) && WriteSlices ) {
@@ -173,11 +171,11 @@ void write3dImage ( const GridType &Grid, const aol::Vector< RealType > &Image, 
     }
     ImageArray->setQuietMode ( true );
     if ( WriteSlices == 0 ) {
-      sprintf ( fileName, "%s.dat.bz2", baseFileName );
-      ImageArray->save ( fileName, PGM_DOUBLE_BINARY );
+      std::string fileName = aol::strprintf ( "%s.dat.bz2", baseFileName );
+      ImageArray->save ( fileName.c_str(), PGM_DOUBLE_BINARY );
     } else {
-      sprintf ( fileName, "%s_%%03d.pgm", baseFileName );
-      ImageArray->saveSlices ( fileName, Direction, qc::PGM_UNSIGNED_CHAR_BINARY, NULL, aol::CLIP_THEN_SCALE, 0, 1 );
+      std::string fileName = aol::strprintf ( "%s_%%03d.pgm", baseFileName );
+      ImageArray->saveSlices ( fileName.c_str(), Direction, qc::PGM_UNSIGNED_CHAR_BINARY, NULL, aol::CLIP_THEN_SCALE, 0, 1 );
     }
     delete ImageArray;
   }
@@ -205,10 +203,9 @@ void writeImage ( const GridType &Grid, const aol::Vector< RealType > &Image, co
 
 template <typename RealType, typename GridType>
 void writeImage ( const GridType &Grid, const aol::MultiVector< RealType > &MImage, const char* baseFileName, const bool WriteSlices = 0, const Comp Direction = qc::QC_X, const bool SaveAsDouble = false ) {
-  char filename[1024];
   for ( int i = 0; i < MImage.numComponents(); i++ ) {
-    sprintf ( filename, "%s_%d", baseFileName, i );
-    qc::writeImage<RealType, GridType> ( Grid, MImage[i], filename, WriteSlices, Direction, SaveAsDouble );
+    std::string filename = aol::strprintf ( "%s_%d", baseFileName, i );
+    qc::writeImage<RealType, GridType> ( Grid, MImage[i], filename.c_str(), WriteSlices, Direction, SaveAsDouble );
   }
 }
 

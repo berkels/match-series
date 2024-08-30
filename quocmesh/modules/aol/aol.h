@@ -832,6 +832,11 @@ inline RealType Reciprocal ( const RealType X ) {
 //! Compute 32 bit checksum for size bytes of any kind of data
 unsigned int crc32 ( const void* const ptr, const unsigned int size );
 
+//! Give back formatted string, analogously to
+//! sprintf, but save the long way 'round with
+//! char arrays.
+string strprintf(const char * format, ...);
+
 //! Calculate time between call of @c start and @c stop
 /** StopWatch measures cputime.
  *  @ingroup Profiling Utilities
@@ -874,11 +879,11 @@ public:
     if ( minutes / 60 > 0 ) {
       const int hours = minutes / 60;
       minutes = minutes % 60;
-      sprintf ( _elapsedString, "%dh %02dm %02.3fs", hours, minutes, seconds );
+      _elapsedString = aol::strprintf ( "%dh %02dm %02.3fs", hours, minutes, seconds );
     } else {
-      sprintf ( _elapsedString, "%dm %02.3fs", minutes, seconds );
+      _elapsedString = aol::strprintf ( "%dm %02.3fs", minutes, seconds );
     }
-    return ( _elapsedString );
+    return ( _elapsedString.c_str() );
   }
 
   //! Returns temporary string containing the elapsed time nicely formatted
@@ -902,7 +907,8 @@ protected:
   double t1, t2, delta;
   time_t started, finished;
   unsigned short _startedMiliseconds, _finishedMiliseconds;
-  char _elapsedString[512], _startedString[512], _stoppedString[512];
+  std::string _elapsedString;
+  char _startedString[512], _stoppedString[512];
 
 public:
   static bool _suppressOpenMPWarning;
@@ -1027,11 +1033,6 @@ out_type convert ( const in_value & t ) {
 //! Sequence is like file.ext, file.0000.ext, file.0001.ext, ...
 string getOutFileName ( const string &inFileName, bool fromEnd = true );
 
-//! Give back formatted string, analogously to
-//! sprintf, but save the long way 'round with
-//! char arrays.
-string strprintf(const char * format, ...);
-
 /**
  * Reads the next line or string (controlled by the Argument "Line") from the
  * istream In and compares it with ExpectedString. If the comparison fails,
@@ -1122,7 +1123,7 @@ void logBenchmarkResult ( const string &BenchmarkName, const RealType Nupsi, con
   if ( ResultFilename.size() > 0 ) {
     std::ofstream resultfile ( ResultFilename.c_str (), std::ios_base::app );
     resultfile << BenchmarkName;
-    for ( int i = BenchmarkName.size(); i < 58; ++i )
+    for ( size_t i = BenchmarkName.size(); i < 58; ++i )
       resultfile << " ";
     resultfile << "| " << aol::longIntFormat (static_cast<int> (Nupsi)) << " | " << aol::longIntFormat (static_cast<int> (Wupsi)) << endl;
   }

@@ -246,9 +246,8 @@ public:
   inline DataType& operator[] ( int I ) {
 #ifdef BOUNDS_CHECK
     if ( I < 0 || I >= _size ) {
-      char error[1024];
-      sprintf ( error, "Vector<DataType,Realtype>::operator[]: index %d out of bounds. _size = %d\n", I, _size );
-      throw OutOfBoundsException ( error, __FILE__, __LINE__ );
+      std::string error = aol::strprintf ( "Vector<DataType,Realtype>::operator[]: index %d out of bounds. _size = %d\n", I, _size );
+      throw OutOfBoundsException ( error.c_str(), __FILE__, __LINE__ );
     }
 #endif
     return _pData[I];
@@ -258,9 +257,8 @@ public:
   inline const DataType& operator[] ( int I ) const {
 #ifdef BOUNDS_CHECK
     if ( I < 0 || I >= _size ) {
-      char error[1024];
-      sprintf ( error, "Vector<DataType,Realtype>::operator[]: index %d out of bounds. _size = %d\n", I, _size );
-      throw OutOfBoundsException ( error, __FILE__, __LINE__ );
+      std::string error = aol::strprintf ( "Vector<DataType,Realtype>::operator[]: index %d out of bounds. _size = %d\n", I, _size );
+      throw OutOfBoundsException ( error.c_str(), __FILE__, __LINE__ );
     }
 #endif
     return _pData[I];
@@ -289,8 +287,8 @@ public:
       throw Exception ( "Cannot open file for reading", __FILE__, __LINE__ );
     }
 
-    const int result = fread ( _pData, sizeof ( DataType ), size(), in );
-    if ( result != size() )
+    const size_t result = fread ( _pData, sizeof ( DataType ), size(), in );
+    if ( result != static_cast<size_t> ( size() ) )
       throw IOException ( "Error reading from file", __FILE__, __LINE__ );
 
     fclose ( in );
@@ -425,9 +423,8 @@ public:
   DataType get ( const int I ) const {
 #ifdef BOUNDS_CHECK
     if ( I < 0 || I >= _size ) {
-      char error[1024];
-      sprintf ( error, "Vector<DataType>::get: index %d out of bounds. _size = %d\n", I, _size );
-      throw OutOfBoundsException ( error, __FILE__, __LINE__ );
+      std::string error = aol::strprintf ( "Vector<DataType>::get: index %d out of bounds. _size = %d\n", I, _size );
+      throw OutOfBoundsException ( error.c_str(), __FILE__, __LINE__ );
     }
 #endif
     return _pData[I];
@@ -436,9 +433,8 @@ public:
   void set ( int I, DataType val ) {
 #ifdef BOUNDS_CHECK
     if ( I < 0 || I >= _size ) {
-      char error[1024];
-      sprintf ( error, "Vector<DataType>::set: index %d out of bounds. _size = %d\n", I, _size );
-      throw OutOfBoundsException ( error, __FILE__, __LINE__ );
+      std::string error = aol::strprintf ( "Vector<DataType>::set: index %d out of bounds. _size = %d\n", I, _size );
+      throw OutOfBoundsException ( error.c_str(), __FILE__, __LINE__ );
     }
 #endif
     _pData[I] = val;
@@ -455,9 +451,8 @@ public:
   void add ( int I, DataType val ) {
 #ifdef BOUNDS_CHECK
     if ( I < 0 || I >= _size ) {
-      char error[1024];
-      sprintf ( error, "Vector<DataType,Realtype>::add: index %d out of bounds. _size = %d\n", I, _size );
-      throw OutOfBoundsException ( error, __FILE__, __LINE__ );
+      std::string error = aol::strprintf ( "Vector<DataType,Realtype>::add: index %d out of bounds. _size = %d\n", I, _size );
+      throw OutOfBoundsException ( error.c_str(), __FILE__, __LINE__ );
     }
 #endif
     _pData[I] += val;

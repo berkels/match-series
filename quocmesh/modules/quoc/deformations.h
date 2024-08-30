@@ -760,6 +760,7 @@ inline bool transformCoord ( const typename ConfiguratorType::InitType &Grid,
 
 //! Shifts a point (given by element El and local coordinates RefCoord) by Offset and computes corresponding point (TransformedEl, TransformedLocalCoord).
 /** If the point is shifted outside [0,1[^d, its coordinates are clipped to the interval [0,1[, and the method returns false.
+ * If the domain is not square, the coordinates are clipped into the corresponding rectangle contained in [0,1[^d.
  */
 template <typename ConfiguratorType>
 inline bool transformAndClipCoord ( const ConfiguratorType &Config,
@@ -773,11 +774,12 @@ inline bool transformAndClipCoord ( const ConfiguratorType &Config,
   Config.getGlobalCoords( El, RefCoord, coord );
   coord += Offset;
   for ( int i = 0; i < ConfiguratorType::Dim; i++ ) {
+    const int width = ( Config.getInitializer().getSize()[i] - 1 ) * Config.getInitializer().H();
     if ( coord[i] < 0. ) {
       coord[i] = 0.;
       insideFlag = false;
-    } else if ( coord[i] >= 1. ) {
-      coord[i] = 1. - std::numeric_limits<typename ConfiguratorType::RealType>::epsilon(); // largest number < 1.0 (for clipping to [0,1[)
+    } else if ( coord[i] >= width ) {
+      coord[i] = width - std::numeric_limits<typename ConfiguratorType::RealType>::epsilon(); // largest number < 1.0 (for clipping to [0,1[)
       insideFlag = false;
     }
   }
@@ -787,6 +789,7 @@ inline bool transformAndClipCoord ( const ConfiguratorType &Config,
 
 //! Shifts a point (given by element El and local coordinates RefCoord) by Offset and computes corresponding point (TransformedEl, TransformedLocalCoord).
 /** If the point is shifted outside [0,1[^d, its coordinates are clipped to the interval [0,1[, and CoordinateWithinLimits is false for the clipped coordinates.
+ * If the domain is not square, the coordinates are clipped into the corresponding rectangle contained in [0,1[^d.
  */
 template <typename ConfiguratorType>
 inline void transformAndClipCoord ( const ConfiguratorType &Config,
@@ -801,11 +804,12 @@ inline void transformAndClipCoord ( const ConfiguratorType &Config,
   Config.getGlobalCoords( El, RefCoord, coord );
   coord += Offset;
   for ( int i = 0; i < ConfiguratorType::Dim; i++ ) {
+    const int width = ( Config.getInitializer().getSize()[i] - 1 ) * Config.getInitializer().H();
     if ( coord[i] < 0. ) {
       coord[i] = 0.;
       CoordinateWithinLimits[i] = false;
-    } else if ( coord[i] >= 1. ) {
-      coord[i] = 1. - std::numeric_limits<typename ConfiguratorType::RealType>::epsilon(); // largest number < 1.0 (for clipping to [0,1[)
+    } else if ( coord[i] >= width ) {
+      coord[i] = width - std::numeric_limits<typename ConfiguratorType::RealType>::epsilon(); // largest number < 1.0 (for clipping to [0,1[)
       CoordinateWithinLimits[i] = false;
     }
   }
@@ -814,6 +818,7 @@ inline void transformAndClipCoord ( const ConfiguratorType &Config,
 
 //! Shifts a point (given by element El and local coordinates RefCoord) by the transformation DiscrTransformation and computes corresponding point (TransformedEl, TransformedLocalCoord).
 /** If the point is shifted outside [0,1]^d, its coordinates are clipped to the interval [0,1], and the method returns false.
+ * If the domain is not square, the coordinates are clipped into the corresponding rectangle contained in [0,1[^d.
  */
 template <typename ConfiguratorType>
 inline bool transformAndClipCoord ( const ConfiguratorType &Config,
@@ -831,6 +836,7 @@ inline bool transformAndClipCoord ( const ConfiguratorType &Config,
 
 //! Shifts a point (given by element El and local coordinates RefCoord) by the transformation DiscrTransformation and computes corresponding point (TransformedEl, TransformedLocalCoord).
 /** If the point is shifted outside [0,1]^d, its coordinates are clipped to the interval [0,1], and CoordinateWithinLimits is false for the clipped coordinates.
+ * If the domain is not square, the coordinates are clipped into the corresponding rectangle contained in [0,1[^d.
  */
 template <typename ConfiguratorType>
 inline void transformAndClipCoord ( const ConfiguratorType &Config,
@@ -849,6 +855,7 @@ inline void transformAndClipCoord ( const ConfiguratorType &Config,
 
 //! Shifts a point (given by element El and local coordinates RefCoord) by the transformation DiscrTransformation and computes corresponding point (TransformedEl, TransformedLocalCoord).
 /** If the point is shifted outside [0,1]^d, its coordinates are clipped to the interval [0,1], and the method returns false.
+ * If the domain is not square, the coordinates are clipped into the corresponding rectangle contained in [0,1[^d.
  */
 template <typename ConfiguratorType>
 inline bool transformAndClipCoord ( const ConfiguratorType &Config,
@@ -865,6 +872,7 @@ inline bool transformAndClipCoord ( const ConfiguratorType &Config,
 
 //! Shifts a point (given by element El and local coordinates RefCoord) by the transformation DiscrTransformation and computes corresponding point (TransformedEl, TransformedLocalCoord).
 /** If the point is shifted outside [0,1]^d, its coordinates are clipped to the interval [0,1], and CoordinateWithinLimits is false for the clipped coordinates.
+ * If the domain is not square, the coordinates are clipped into the corresponding rectangle contained in [0,1[^d.
  */
 template <typename ConfiguratorType>
 inline void transformAndClipCoord ( const ConfiguratorType &Config,

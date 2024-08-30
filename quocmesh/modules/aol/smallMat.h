@@ -820,9 +820,8 @@ protected:
 #ifdef BOUNDS_CHECK
   inline void rowBoundsCheck ( const int i, const char* fi, const int li ) const {
     if ( i < 0 || i >= numRows ) {
-      char errmsg[1024];
-      sprintf( errmsg, "aol::Mat: index %d out of bounds (%d)", i, numRows );
-      throw aol::OutOfBoundsException ( errmsg, fi, li );
+      std::string errmsg = aol::strprintf ( "aol::Mat: index %d out of bounds (%d)", i, numRows );
+      throw aol::OutOfBoundsException ( errmsg.c_str(), fi, li );
     }
   }
 #endif
@@ -1324,7 +1323,7 @@ public:
 
   /** a default constructor
    */
-  Matrix44<_DataType> ( void ) : Mat<4, 4, _DataType>() {}
+  Matrix44 ( void ) : Mat<4, 4, _DataType>() {}
 
   //! Constructor
   //! fills this with:

@@ -33,6 +33,9 @@ WARNING_OFF(old-style-cast)
 #ifdef min
 #undef min
 #endif
+#ifdef Status
+#undef Status
+#endif
 
 #ifdef __GNUC__
 /* WARNING_ON(old-style-cast) */

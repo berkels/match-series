@@ -173,9 +173,8 @@ public:
 
     // check dimensions
     if ( this->getNumRows() != Dest.size() || this->getNumCols() != Arg.size() ) {
-      char errmsg [ 1024 ];
-      sprintf ( errmsg, "aol::GenSparseMatrix::apply: Cannot apply %d by %d matrix from vector of size %d to vector of size %d.", this->getNumRows(), this->getNumCols(), Arg.size(), Dest.size() );
-      throw ( Exception ( errmsg, __FILE__, __LINE__ ) );
+      std::string errmsg = aol::strprintf ( "aol::GenSparseMatrix::apply: Cannot apply %d by %d matrix from vector of size %d to vector of size %d.", this->getNumRows(), this->getNumCols(), Arg.size(), Dest.size() );
+      throw ( Exception ( errmsg.c_str(), __FILE__, __LINE__ ) );
     }
 
     switch ( applyMode ) {
@@ -246,9 +245,8 @@ public:
 
     // check dimensions
     if ( this->getNumRows() != Dest.size() || this->getNumCols() != Arg.size() ) {
-      char errmsg [ 1024 ];
-      sprintf ( errmsg, "aol::GenSparseMatrix::apply: Cannot apply %d by %d matrix from vector of size %d to vector of size %d.", this->getNumRows(), this->getNumCols(), Arg.size(), Dest.size() );
-      throw ( Exception ( errmsg, __FILE__, __LINE__ ) );
+      std::string errmsg = aol::strprintf ( "aol::GenSparseMatrix::apply: Cannot apply %d by %d matrix from vector of size %d to vector of size %d.", this->getNumRows(), this->getNumCols(), Arg.size(), Dest.size() );
+      throw ( Exception ( errmsg.c_str(), __FILE__, __LINE__ ) );
     }
 
     switch ( applyMode ) {
