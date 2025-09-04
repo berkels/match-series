@@ -85,6 +85,10 @@ public:
   }
 
   void matchSeries ( ) {
+    cerr << "\n--------------------------------------------------------\n";
+    cerr << "Stage " << this->_stage << " started\n";
+    cerr << "--------------------------------------------------------\n\n";
+  
     // We will temporarily change the save directory, so store the original value.
     const string origSaveDir = _registrationAlgo.getSaveDirectory();
 
@@ -116,6 +120,9 @@ public:
     _registrationAlgo.getTransformation ( accumulatedTransformation );
 
     for ( int i = 0; i < numTemplateImages; ++i ) {
+      cerr << "\n--------------------------------------------------------\n";
+      cerr << "Matching template image " << templateFileNames[i].c_str() << " started\n";
+      cerr << "--------------------------------------------------------\n\n";
       // First match the current template with the last template (assuming that the first template is the reference image).
 
       // In case we try to reduce the deformations, we have to adjust the initial deformation used
@@ -139,7 +146,7 @@ public:
         _registrationAlgo.setTransformationToZero();
 
       _registrationAlgo.loadRefOrTemplate ( templateFileNames[i].c_str(), reverseRoles ? qc::REFERENCE : qc::TEMPLATE, _parser.checkAndGetBool ( "dontNormalizeInputImages" ) );
-      if ( ( _loadStageOneResults == false ) || ( i == 0 ) ) {
+      if ( ( _loadStageOneResults == false ) || ( i == 0 ) || ( _parser.checkAndGetBool ( "dontAccumulateDeformation" ) )) {
         _registrationAlgo.makeAndSetSaveDirectory ( aol::strprintf ( "%s%d/", _parser.getStringExpandTilde ( "saveDirectory" ).c_str(), i ).c_str() );
 
         if ( _parser.checkAndGetBool ( "useCorrelationToInitTranslation" ) ) {

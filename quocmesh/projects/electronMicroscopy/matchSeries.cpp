@@ -197,6 +197,16 @@ int main( int argc, char **argv ) {
           matchSeries<ConfType, RegisType>( parser, argc, argv );
         }
         break;
+      case 23:
+        {
+          typedef qc::RectangularGridConfigurator<RType, DimensionChoice, aol::GaussQuadrature<RType,DimensionChoice,3> > NonDyadicConfType;
+          typedef NonDyadicRegistrationMultilevelDescent<NonDyadicConfType, im::MIRegistrationConfigurator, qc::DirichletRegularizationConfigurator, ConfType,
+                                                         qc::StandardRegistrationMultilevelDescent<ConfType, im::MIRegistrationConfigurator<ConfType>, qc::DirichletRegularizationConfigurator<ConfType> >,
+                                                         aol::H1GradientDescent<NonDyadicConfType, aol::MultiVector<RType>, qc::CholeskyBasedInverseH1Metric<NonDyadicConfType> >
+                                                         > RegisType;
+          matchSeries<ConfType, RegisType>( parser, argc, argv );
+        }
+        break;
       default:
         throw aol::Exception ( "Unknown mode", __FILE__, __LINE__ );
     }

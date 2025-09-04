@@ -356,12 +356,12 @@ public:
   }
 
 
-  void setImageReference ( const aol::Vector<RealType> &Image ) {
-    if ( _discFunc )
-      delete _discFunc;
-    _discFunc = new aol::DiscreteFunctionDefault<ConfiguratorType>( this->_config.getInitializer(), Image );
-    this->reset();
-  }
+  // void setImageReference ( const aol::Vector<RealType> &Image ) {
+  //   if ( _discFunc )
+  //     delete _discFunc;
+  //   _discFunc = new aol::DiscreteFunctionDefault<ConfiguratorType>( this->_config.getInitializer(), Image );
+  //   this->reset();
+  // }
 
   void setBlendingValue ( const RealType Eta ) {
     _eta = Eta;
@@ -1910,7 +1910,7 @@ private:
 public:
   RegMaxAnisotropy ( RealType eps ) : _epsilon ( eps ) { }
 
-  RealType p() const { return this->_p; }
+  // RealType p() const { return this->_p; }
 
   void implicitPart ( const aol::Vec2<RealType> &, const aol::Vec2<RealType> &z, aol::Matrix22<RealType> &mat ) const {
     implicitPart ( z, mat );

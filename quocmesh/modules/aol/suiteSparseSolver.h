@@ -12,7 +12,7 @@
 #include <SuiteSparseQR.hpp>
 
 // Newer versions of SuiteSparse removed the member dtype from cholmod_common.
-#if defined(CHOLMOD_MAIN_VERSION) and (CHOLMOD_MAIN_VERSION >=5) and (CHOLMOD_SUB_VERSION >=2)
+#if defined(CHOLMOD_MAIN_VERSION) and (CHOLMOD_MAIN_VERSION >=5) and (CHOLMOD_SUB_VERSION >=1)
 #define SET_CHOLMOD_DTYPE 0
 #else
 #define SET_CHOLMOD_DTYPE 1

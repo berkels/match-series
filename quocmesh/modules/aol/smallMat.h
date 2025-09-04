@@ -1508,31 +1508,31 @@ public:
     ( _row[2] ) [index] = v3;
   }
 
-  template <class T>
-  void setRow ( const int /*index*/, const Vec3<T> &vec ) {
-    ( _row[this->Index] ) [0] = static_cast<T> ( vec.get ( 0 ) );
-    ( _row[0] ) [this->Index] = static_cast<T> ( vec.get ( 0 ) );
+  // template <class T>
+  // void setRow ( const int /*index*/, const Vec3<T> &vec ) {
+  //   ( _row[this->Index] ) [0] = static_cast<T> ( vec.get ( 0 ) );
+  //   ( _row[0] ) [this->Index] = static_cast<T> ( vec.get ( 0 ) );
 
-    ( _row[this->Index] ) [1] = static_cast<T> ( vec.get ( 1 ) );
-    ( _row[1] ) [this->Index] = static_cast<T> ( vec.get ( 1 ) );
+  //   ( _row[this->Index] ) [1] = static_cast<T> ( vec.get ( 1 ) );
+  //   ( _row[1] ) [this->Index] = static_cast<T> ( vec.get ( 1 ) );
 
-    ( _row[this->Index] ) [2] = static_cast<T> ( vec.get ( 2 ) );
-    ( _row[2] ) [this->Index] = static_cast<T> ( vec.get ( 2 ) );
-  }
+  //   ( _row[this->Index] ) [2] = static_cast<T> ( vec.get ( 2 ) );
+  //   ( _row[2] ) [this->Index] = static_cast<T> ( vec.get ( 2 ) );
+  // }
 
-  template <class T>
-  void getRow ( const int index, Vec3<T> &dest ) const {
-    dest[0] = static_cast<T> ( ( _row ) [index][0] );
-    dest[1] = static_cast<T> ( ( _row ) [this->Index][1] );
-    dest[2] = static_cast<T> ( ( _row ) [this->Index][2] );
-  }
+  // template <class T>
+  // void getRow ( const int index, Vec3<T> &dest ) const {
+  //   dest[0] = static_cast<T> ( ( _row ) [index][0] );
+  //   dest[1] = static_cast<T> ( ( _row ) [this->Index][1] );
+  //   dest[2] = static_cast<T> ( ( _row ) [this->Index][2] );
+  // }
 
-  template <class T>
-  void getColumn ( const int /*index*/, Vec3<T> &dest ) const {
-    dest[0] = static_cast<T> ( ( _row ) [0][this->Index] );
-    dest[1] = static_cast<T> ( ( _row ) [1][this->Index] );
-    dest[2] = static_cast<T> ( ( _row ) [2][this->Index] );
-  }
+  // template <class T>
+  // void getColumn ( const int /*index*/, Vec3<T> &dest ) const {
+  //   dest[0] = static_cast<T> ( ( _row ) [0][this->Index] );
+  //   dest[1] = static_cast<T> ( ( _row ) [1][this->Index] );
+  //   dest[2] = static_cast<T> ( ( _row ) [2][this->Index] );
+  // }
 
 
   //! \f$ x \mapsto Ax \f$
@@ -1600,13 +1600,13 @@ public:
     return *this;
   }
 
-  template< class T >
-  void makeProduct ( const Matrix33Symm<T> &Mat1, const Matrix33Symm<T> &Mat2 ) {
-    setZero();
-    for ( int i = 0;i < 3; ++i ) for ( int j = 0;j < 3; ++j ) for ( int k = 0;k < 3; ++k ) {
-          this->_v[i][j] += Mat1.get ( i, k ) * Mat2.get ( k, j );
-        }
-  }
+  // template< class T >
+  // void makeProduct ( const Matrix33Symm<T> &Mat1, const Matrix33Symm<T> &Mat2 ) {
+  //   setZero();
+  //   for ( int i = 0;i < 3; ++i ) for ( int j = 0;j < 3; ++j ) for ( int k = 0;k < 3; ++k ) {
+  //         this->_v[i][j] += Mat1.get ( i, k ) * Mat2.get ( k, j );
+  //       }
+  // }
 
   void makeProduct ( const Matrix33Symm<_DataType> &A, const Matrix33Symm<_DataType> &B ) {
     setZero();

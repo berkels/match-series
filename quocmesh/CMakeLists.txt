@@ -1,7 +1,7 @@
 #! \file
 #! \brief Main cmake configuration file
 
-CMAKE_MINIMUM_REQUIRED ( VERSION 2.8 )
+CMAKE_MINIMUM_REQUIRED ( VERSION 3.5 )
 
 PROJECT ( quocmesh )
 
@@ -513,7 +513,7 @@ IF ( BUILD_AND_USE_WAVELET )
   IF ( NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/external/wavelet1d-source/wavelet.cpp )
   	SET ( WAVELET_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/wavelet1d-source )
   	SET ( WAVELET_ARCHIVE ${WAVELET_SOURCE_DIR}/wavelet1d.rar )
-  	FILE ( DOWNLOAD http://wavelet1d.googlecode.com/files/wavelet-03.rar ${WAVELET_ARCHIVE} SHOW_PROGRESS )
+  	FILE ( DOWNLOAD https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/wavelet1d/wavelet-03.rar ${WAVELET_ARCHIVE} SHOW_PROGRESS )
   	EXECUTE_PROCESS ( COMMAND ${CMAKE_COMMAND} -E tar xzf ${WAVELET_ARCHIVE} WORKING_DIRECTORY ${WAVELET_SOURCE_DIR} )
 
   	# Copy all files into the directory we want to have the source in
@@ -613,8 +613,9 @@ ENDIF( USE_BOOST )
 #! \cmakeoption{Use blas library,ON}
 OPTION ( USE_BLAS "" OFF )
 IF ( USE_BLAS )
-  # Module of cmake 2.8.x does not really work, module of cmake 3.1.0 does well
-  CMAKE_MINIMUM_REQUIRED ( VERSION 3.1 )
+  IF ( POLICY CMP0152 )
+    CMAKE_POLICY ( SET CMP0152 NEW )
+  ENDIF ( )
   FIND_PACKAGE ( BLAS )
   # Look for OpenBLASConfig.cmake config file, also try OpenBLASST
   FIND_PACKAGE( OpenBLAS QUIET NAMES OpenBLAS OpenBLASST )
@@ -628,8 +629,6 @@ ENDIF( USE_BLAS )
 #! \cmakeoption{Use lapack library,ON}
 OPTION ( USE_LAPACK "" OFF )
 IF ( USE_LAPACK )
-  # Module of cmake 2.8.6 does not find local lib
-  CMAKE_MINIMUM_REQUIRED ( VERSION 3.1 )
   FIND_PACKAGE ( LAPACK REQUIRED )
 ENDIF ( USE_LAPACK )
 
